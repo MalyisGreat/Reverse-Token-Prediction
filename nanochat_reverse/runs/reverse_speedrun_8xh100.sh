@@ -1,7 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# Reverse-token nanochat run for a single H100 node.
+# Reverse-token nanochat run for a single 8xH100 node.
+# Recommended RunPod template: official RunPod PyTorch on H100 SXM.
+# If entering an image manually, prefer:
+#   runpod/pytorch:1.0.3-cu1290-torch291-ubuntu2204
 # It keeps nanochat's high-throughput pretraining stack, but trains the base
 # model on BOS + reversed token rows so the causal objective predicts the
 # previous token instead of the next token.
@@ -48,6 +51,28 @@ echo "data_shards=$DATA_SHARDS save_every=$SAVE_EVERY eval_every=$EVAL_EVERY"
 if [ -n "$TOTAL_BATCH_SIZE" ]; then
   echo "total_batch_size=$TOTAL_BATCH_SIZE"
 fi
+
+python - <<'PY'
+import os
+import subprocess
+import torch
+
+expected = int(os.environ.get("NPROC_PER_NODE", "8"))
+num_nodes = int(os.environ.get("NUM_NODES", "1"))
+actual = torch.cuda.device_count()
+print(f"cuda_visible_devices={actual} expected_gpus={expected} num_nodes={num_nodes}")
+if num_nodes != 1:
+    raise SystemExit(
+        "This launcher is for a single 8-GPU node. "
+        "Do not use a multi-node Instant Cluster without a multi-node torchrun launcher."
+    )
+if actual < expected:
+    raise SystemExit(f"Expected at least {expected} CUDA devices, found {actual}")
+try:
+    print(subprocess.check_output(["nvidia-smi", "-L"], text=True).strip())
+except Exception as exc:
+    print(f"WARNING: nvidia-smi -L failed: {exc}")
+PY
 
 python -m nanochat.report reset
 

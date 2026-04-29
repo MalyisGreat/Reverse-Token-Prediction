@@ -48,31 +48,23 @@ bash scripts/smoke_test.sh
 bash scripts/train_h100_reverse_100m.sh
 ```
 
-For limited H100 time, use the speedrun path instead:
+For a single-H100 budget run, use the older speedrun path:
 
 ```bash
 TARGET_TOKENS=1000000000 bash scripts/runpod_h100_speedrun.sh
 ```
 
-That script installs the environment with FlashAttention enabled, builds a local pretokenized token binary under `/workspace/reverse_data`, runs a short attention benchmark, then starts training from the token binary. This is the recommended RunPod path because it avoids paying for H100 time while Python streams and tokenizes text every batch.
+That script installs the environment with FlashAttention enabled, builds a local pretokenized token binary under `/workspace/reverse_data`, runs a short attention benchmark, then starts training from the token binary. It remains useful for one-GPU experiments, but the recommended paid multi-H100 path is the nanochat fork below.
 
 ## Nanochat 8xH100 Reverse Run
 
-For the full nanochat-based run on a 5xH100 node:
+For the full nanochat-based run on an 8xH100 RunPod node, use the official RunPod PyTorch template. If entering a Docker image manually, use `runpod/pytorch:1.0.3-cu1290-torch291-ubuntu2204`.
 
 ```bash
-cd nanochat_reverse
-screen -L -Logfile reverse_5xh100.log -S reverse-nanochat-5x \
-  bash runs/reverse_speedrun_5xh100.sh
-```
-
-This keeps the d24/ratio8/fp8 speedrun settings and adjusts batch/vocab sharding for five GPUs.
-
-For an 8xH100 node:
-
-```bash
-cd nanochat_reverse
-screen -L -Logfile reverse_speedrun.log -S reverse-nanochat \
+git clone https://github.com/MalyisGreat/Reverse-Token-Prediction.git
+cd Reverse-Token-Prediction/nanochat_reverse
+WANDB_RUN=reverse-d24-ratio8-8xh100 \
+screen -L -Logfile reverse_8xh100.log -S reverse-nanochat-8x \
   bash runs/reverse_speedrun_8xh100.sh
 ```
 
@@ -83,9 +75,19 @@ input:  <|bos|> xT xT-1 xT-2 ...
 target:         xT-1 xT-2 xT-3 ...
 ```
 
+For a 5xH100 fallback:
+
+```bash
+cd nanochat_reverse
+screen -L -Logfile reverse_5xh100.log -S reverse-nanochat-5x \
+  bash runs/reverse_speedrun_5xh100.sh
+```
+
+This keeps the d24/ratio8/fp8 speedrun settings and adjusts batch/vocab sharding for five GPUs.
+
 See `docs/nanochat_reverse_h100.md` for launch knobs, checkpoint locations, and reverse-generation commands.
 
-The H100 launcher defaults to:
+The older single-H100 launcher defaults to:
 
 - roughly `100M` parameters
 - `vocab_size=8192`
@@ -100,7 +102,7 @@ The H100 launcher defaults to:
 - fixed reverse-only objective
 - FineWeb-Edu streaming data
 
-Override anything with environment variables:
+Override the single-H100 trainer with environment variables:
 
 ```bash
 TARGET_TOKENS=5000000000 BATCH_SIZE=192 COMPILE=1 bash scripts/train_h100_reverse_100m.sh
