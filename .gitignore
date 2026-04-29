@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Training artifacts are intentionally local.
+runs*/
+cache*/
+tokenizer*/
+logs/
+*.log
+*.err.log
+*.pid
+*.pt
+*.pth
+*.safetensors
+events.out.tfevents.*
+
+# Local editor and OS files.
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

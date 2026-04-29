@@ -1,0 +1,5 @@
+datasets>=2.20
+numpy>=1.26
+tensorboard>=2.16
+tokenizers>=0.19
+tqdm>=4.66
