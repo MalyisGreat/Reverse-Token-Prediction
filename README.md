@@ -63,7 +63,7 @@ For the full nanochat-based run on an 8xH100 RunPod node, use the official RunPo
 ```bash
 git clone https://github.com/MalyisGreat/Reverse-Token-Prediction.git
 cd Reverse-Token-Prediction/nanochat_reverse
-WANDB_RUN=reverse-d24-ratio8-8xh100 \
+WANDB_RUN=dummy \
 screen -L -Logfile reverse_8xh100.log -S reverse-nanochat-8x \
   bash runs/reverse_speedrun_8xh100.sh
 ```
@@ -86,6 +86,14 @@ screen -L -Logfile reverse_5xh100.log -S reverse-nanochat-5x \
 This keeps the d24/ratio8/fp8 speedrun settings and adjusts batch/vocab sharding for five GPUs.
 
 See `docs/nanochat_reverse_h100.md` for launch knobs, checkpoint locations, and reverse-generation commands.
+
+W&B is optional. Leave `WANDB_RUN` unset or set `WANDB_RUN=dummy` to use terminal logs only. Watch and sample with:
+
+```bash
+cd Reverse-Token-Prediction/nanochat_reverse
+MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_watch.sh
+MODEL_TAG=reverse_d24_ratio8 ANCHOR="and that was the strange part." bash runs/reverse_sample.sh
+```
 
 The older single-H100 launcher defaults to:
 
@@ -177,6 +185,8 @@ Bare anchors like `42` are intentionally weak and tend to produce bibliography/d
 - `scripts/sample_reverse.sh` - suffix-conditioned generation
 - `docs/reverse_training_idea.md` - experiment rationale and expected behavior
 - `nanochat_reverse/` - vendored nanochat with `--reverse-training` plus 5xH100 and 8xH100 launch scripts
+- `nanochat_reverse/runs/reverse_sample.sh` - easy suffix-anchor generation wrapper for reverse checkpoints
+- `nanochat_reverse/runs/reverse_watch.sh` - W&B-free log/checkpoint monitor
 - `docs/nanochat_reverse_h100.md` - nanochat reverse H100 runbook
 
 ## Notes

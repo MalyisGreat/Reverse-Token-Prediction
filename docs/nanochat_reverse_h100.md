@@ -42,7 +42,7 @@ Run from the vendored nanochat folder on the 8xH100 node:
 git clone https://github.com/MalyisGreat/Reverse-Token-Prediction.git
 cd Reverse-Token-Prediction/nanochat_reverse
 
-WANDB_RUN=reverse-d24-ratio8-8xh100 \
+WANDB_RUN=dummy \
 screen -L -Logfile reverse_8xh100.log -S reverse-nanochat-8x \
   bash runs/reverse_speedrun_8xh100.sh
 ```
@@ -76,14 +76,22 @@ Loss visibility:
 - validation BPB prints every `EVAL_EVERY` steps
 - the launcher writes a persistent log under `$NANOCHAT_BASE_DIR/logs/`
 - set `WANDB_RUN=...` to log `train/loss`, `train/tok_per_sec`, `train/mfu`, `val/bpb`, and timing plots to W&B
+- leave `WANDB_RUN` unset, or set `WANDB_RUN=dummy`, to skip W&B entirely
 
 CORE eval is disabled by default because a reverse-only model is not a normal forward question-answering model. Training still reports reverse validation BPB.
 
 Monitor it with:
 
 ```bash
-tail -f "$NANOCHAT_BASE_DIR/logs/"*.log
-ls -lh "$NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG"
+MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_watch.sh
+```
+
+Sample the latest checkpoint with:
+
+```bash
+MODEL_TAG=reverse_d24_ratio8 \
+ANCHOR="and that was the strange part." \
+bash runs/reverse_sample.sh
 ```
 
 ## 5xH100 Fallback
@@ -152,6 +160,14 @@ python -m scripts.reverse_generate \
   --anchor "the answer is 42." \
   --num-samples 4 \
   --max-tokens 128
+```
+
+The shorter wrapper is:
+
+```bash
+MODEL_TAG=reverse_d24_ratio8 \
+ANCHOR="the answer is 42." \
+bash runs/reverse_sample.sh
 ```
 
 The anchor is normal forward text. The script reverses the anchor tokens, samples in reverse order, then flips the full token stream back into readable text.

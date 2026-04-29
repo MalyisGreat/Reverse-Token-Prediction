@@ -48,6 +48,11 @@ echo "base_dir=$NANOCHAT_BASE_DIR"
 echo "model_tag=$MODEL_TAG"
 echo "depth=$DEPTH ratio=$TARGET_PARAM_DATA_RATIO nproc=$NPROC_PER_NODE device_batch=$DEVICE_BATCH_SIZE"
 echo "data_shards=$DATA_SHARDS save_every=$SAVE_EVERY eval_every=$EVAL_EVERY"
+if [ "$WANDB_RUN" = "dummy" ]; then
+  echo "wandb=disabled (WANDB_RUN=dummy); use logs/checkpoints/reverse_sample.sh to inspect the run"
+else
+  echo "wandb_run=$WANDB_RUN"
+fi
 if [ -n "$TOTAL_BATCH_SIZE" ]; then
   echo "total_batch_size=$TOTAL_BATCH_SIZE"
 fi
@@ -108,10 +113,13 @@ torchrun --standalone --nproc_per_node="$NPROC_PER_NODE" -m scripts.base_train -
   "${TRAIN_EXTRA_ARGS[@]}" \
   $FP8_FLAG
 
-python -m scripts.reverse_generate \
-  --model-tag "$MODEL_TAG" \
-  --anchor "${SAMPLE_ANCHOR:-the answer is 42.}" \
-  --num-samples "${SAMPLE_COUNT:-4}" \
-  --max-tokens "${SAMPLE_MAX_TOKENS:-128}"
+RUN_FINAL_SAMPLE="${RUN_FINAL_SAMPLE:-1}"
+if [ "$RUN_FINAL_SAMPLE" != "0" ]; then
+  MODEL_TAG="$MODEL_TAG" \
+  ANCHOR="${SAMPLE_ANCHOR:-the answer is 42.}" \
+  NUM_SAMPLES="${SAMPLE_COUNT:-4}" \
+  MAX_TOKENS="${SAMPLE_MAX_TOKENS:-128}" \
+    bash runs/reverse_sample.sh
+fi
 
 python -m nanochat.report generate
