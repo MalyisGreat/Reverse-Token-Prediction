@@ -46,6 +46,14 @@ bash scripts/smoke_test.sh
 bash scripts/train_h100_reverse_100m.sh
 ```
 
+For limited H100 time, use the speedrun path instead:
+
+```bash
+TARGET_TOKENS=1000000000 bash scripts/runpod_h100_speedrun.sh
+```
+
+That script installs the environment with FlashAttention enabled, builds a local pretokenized token binary under `/workspace/reverse_data`, runs a short attention benchmark, then starts training from the token binary. This is the recommended RunPod path because it avoids paying for H100 time while Python streams and tokenizes text every batch.
+
 The H100 launcher defaults to:
 
 - roughly `100M` parameters
@@ -127,6 +135,8 @@ Bare anchors like `42` are intentionally weak and tend to produce bibliography/d
 
 - `reverse_token_prediction_lab.py` - single-file trainer/evaluator/generator
 - `scripts/setup_h100_env.sh` - Python environment setup
+- `scripts/prepare_token_bin.sh` - build a local uint16/uint32 token binary for fast training
+- `scripts/runpod_h100_speedrun.sh` - install, prepare token bin, benchmark, and launch a budget H100 run
 - `scripts/train_h100_reverse_100m.sh` - H100 from-scratch reverse-only training
 - `scripts/resume_h100_reverse_100m.sh` - H100 continuation training
 - `scripts/bench_h100_attention.sh` - quick H100 throughput comparison for attention variants

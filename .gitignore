@@ -14,6 +14,8 @@ logs/
 *.pt
 *.pth
 *.safetensors
+*.bin
+*.bin.json
 events.out.tfevents.*
 
 # Local editor and OS files.

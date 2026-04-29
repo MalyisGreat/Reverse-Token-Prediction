@@ -16,6 +16,8 @@ OUT_DIR="${OUT_DIR:-runs_h100_reverse_100m}"
 CACHE_DIR="${CACHE_DIR:-cache_h100_reverse_100m}"
 TOKENIZER_DIR="${TOKENIZER_DIR:-tokenizer_h100_reverse_8192}"
 LOG_DIR="${LOG_DIR:-logs}"
+DATA_BIN="${DATA_BIN:-}"
+DATA_META="${DATA_META:-}"
 
 DATASET_NAME="${DATASET_NAME:-HuggingFaceFW/fineweb-edu}"
 DATASET_CONFIG="${DATASET_CONFIG:-sample-10BT}"
@@ -85,6 +87,9 @@ if [ -n "$SEQ_LEN_SCHEDULE" ]; then
   echo "seq_len_schedule=$SEQ_LEN_SCHEDULE"
 fi
 echo "batch_size=$BATCH_SIZE grad_accum=$GRAD_ACCUM_STEPS workers=$NUM_WORKERS prefetch=$PREFETCH_FACTOR"
+if [ -n "$DATA_BIN" ]; then
+  echo "data_bin=$DATA_BIN"
+fi
 
 TOKENIZER_PATH="$TOKENIZER_DIR/byte_bpe_vocab${VOCAB_SIZE}.json"
 TOKENIZER_FLAGS=()
@@ -155,6 +160,8 @@ LOG_PATH="$LOG_DIR/${MODEL_NAME}_$(date +%Y%m%d_%H%M%S).log"
   --tokenizer_dir "$TOKENIZER_DIR" \
   --out_dir "$OUT_DIR" \
   --cache_dir "$CACHE_DIR" \
+  --data_bin "$DATA_BIN" \
+  --data_meta "$DATA_META" \
   --amp true \
   --amp_dtype "$AMP_DTYPE" \
   --tf32 true \

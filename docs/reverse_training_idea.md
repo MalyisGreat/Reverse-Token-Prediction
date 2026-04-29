@@ -74,6 +74,16 @@ The default H100 launch uses `seq_len=1024`, `batch_size=128`, `d_model=768`, `n
 
 For a new H100 box, run `scripts/bench_h100_attention.sh` first. If FlashAttention is not installed, PyTorch SDPA may make the local-window variant slower than global attention even though it is architecturally better for long-context scaling.
 
+## Budget RunPod Path
+
+For limited rented compute, use `scripts/runpod_h100_speedrun.sh`. It does three things before the real run:
+
+- installs FlashAttention when possible
+- tokenizes FineWeb-Edu once into a local binary token file
+- benchmarks attention variants before launching the long run
+
+The token binary matters because streaming Hugging Face data and tokenizing text inside the dataloader can leave an H100 underfed. The default speedrun target is 1B training tokens, with a 10% token-buffer margin for validation and sampling.
+
 ## Recommended Experiment Sequence
 
 1. Run the H100 attention benchmark.

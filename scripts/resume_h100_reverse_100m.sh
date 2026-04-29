@@ -17,6 +17,8 @@ TOKENIZER_DIR="${TOKENIZER_DIR:-tokenizer_h100_reverse_8192}"
 LOG_DIR="${LOG_DIR:-logs}"
 MODEL_NAME="${MODEL_NAME:-h100_reverse_100m_resume}"
 EXPERIMENT="${EXPERIMENT:-reverse_only}"
+DATA_BIN="${DATA_BIN:-}"
+DATA_META="${DATA_META:-}"
 
 ADDITIONAL_TOKENS="${ADDITIONAL_TOKENS:-3000000000}"
 BATCH_SIZE="${BATCH_SIZE:-128}"
@@ -93,6 +95,9 @@ echo "attention pattern=$ATTENTION_PATTERN window=$SLIDING_WINDOW global_every=$
 if [ -n "$SEQ_LEN_SCHEDULE" ]; then
   echo "seq_len_schedule=$SEQ_LEN_SCHEDULE"
 fi
+if [ -n "$DATA_BIN" ]; then
+  echo "data_bin=$DATA_BIN"
+fi
 
 EXTRA_FLAGS=()
 if [ "$COMPILE" = "1" ]; then
@@ -139,6 +144,8 @@ LOG_PATH="$LOG_DIR/${MODEL_NAME}_$(date +%Y%m%d_%H%M%S).log"
   --tokenizer_dir "$TOKENIZER_DIR" \
   --out_dir "$OUT_DIR" \
   --cache_dir "$CACHE_DIR" \
+  --data_bin "$DATA_BIN" \
+  --data_meta "$DATA_META" \
   --amp true \
   --amp_dtype "$AMP_DTYPE" \
   --tf32 true \

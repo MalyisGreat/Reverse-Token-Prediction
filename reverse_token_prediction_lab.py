@@ -361,6 +361,29 @@ def token_id(tok: Tokenizer, s: str) -> int:
     return int(tid)
 
 
+def token_dtype_for_vocab(vocab_size: int) -> np.dtype:
+    return np.dtype("uint16" if vocab_size <= 65535 else "uint32")
+
+
+def infer_data_meta_path(args: argparse.Namespace) -> str:
+    if args.data_meta:
+        return args.data_meta
+    if not args.data_bin:
+        return ""
+    return f"{args.data_bin}.json"
+
+
+def load_token_bin_metadata(args: argparse.Namespace) -> Dict[str, int | str]:
+    if not args.data_bin:
+        raise ValueError("--data_bin is required")
+    meta_path = infer_data_meta_path(args)
+    if not meta_path or not Path(meta_path).exists():
+        raise FileNotFoundError(f"token metadata not found: {meta_path}")
+    with open(meta_path, "r", encoding="utf-8") as f:
+        meta = json.load(f)
+    return meta
+
+
 class PackedTokenDataset(IterableDataset):
     """Streams text, tokenizes it, and yields fixed-length token blocks.
 
@@ -404,7 +427,127 @@ class PackedTokenDataset(IterableDataset):
                 yield torch.tensor(block, dtype=torch.long)
 
 
+class MemmapTokenDataset(IterableDataset):
+    """Fast infinite block sampler from a pretokenized binary token file."""
+
+    def __init__(self, args: argparse.Namespace, split: str, seed: int):
+        super().__init__()
+        self.args = args
+        self.split = split
+        self.seed = seed
+        self.block_len = args.seq_len + 1
+        self.meta = load_token_bin_metadata(args)
+        self.dtype = np.dtype(str(self.meta.get("dtype", token_dtype_for_vocab(args.vocab_size).name)))
+        self.num_tokens = int(self.meta["num_tokens"])
+        self.val_tokens = max(self.block_len * max(1, args.val_blocks), int(self.num_tokens * 0.002))
+        self.val_tokens = min(self.val_tokens, max(0, self.num_tokens - self.block_len - 1))
+
+    def __iter__(self) -> Iterator[torch.Tensor]:
+        worker = get_worker_info()
+        worker_id = worker.id if worker is not None else 0
+        local_seed = self.seed + 9973 * worker_id
+        rng = np.random.default_rng(local_seed)
+        data = np.memmap(self.args.data_bin, dtype=self.dtype, mode="r", shape=(self.num_tokens,))
+
+        if self.split == "val":
+            lo = max(0, self.num_tokens - self.val_tokens - self.block_len)
+            hi = self.num_tokens - self.block_len
+        else:
+            lo = 0
+            hi = max(1, self.num_tokens - self.val_tokens - self.block_len)
+        if hi <= lo:
+            raise ValueError(f"token bin is too small for seq_len={self.args.seq_len}: tokens={self.num_tokens}")
+
+        while True:
+            start = int(rng.integers(lo, hi))
+            arr = np.asarray(data[start : start + self.block_len], dtype=np.int64)
+            yield torch.from_numpy(arr.copy()).long()
+
+
+def prepare_token_bin(args: argparse.Namespace, tok: Tokenizer) -> None:
+    if not args.data_bin:
+        raise ValueError("--data_bin is required for --mode prepare_tokens")
+    data_path = Path(args.data_bin)
+    safe_mkdir(data_path.parent if str(data_path.parent) else ".")
+    meta_path = Path(infer_data_meta_path(args))
+    safe_mkdir(meta_path.parent if str(meta_path.parent) else ".")
+
+    dtype = token_dtype_for_vocab(args.vocab_size)
+    eos_id = token_id(tok, EOS)
+    target_tokens = int(args.prepare_tokens)
+    chunk_tokens = max(1024, int(args.prepare_chunk_tokens))
+    written = 0
+    buf: List[int] = []
+    t0 = time.time()
+
+    print(f"[{now()}] preparing token bin: path={data_path} dtype={dtype.name} target={target_tokens or 'unbounded'}")
+    with open(data_path, "wb") as f:
+        for text in hf_text_stream(args, seed=args.seed + 400, skip=args.train_skip_texts):
+            ids = tok.encode(text).ids
+            if not ids:
+                continue
+            ids.append(eos_id)
+            if target_tokens > 0 and written + len(buf) + len(ids) > target_tokens:
+                remaining = target_tokens - written - len(buf)
+                if remaining > 0:
+                    buf.extend(ids[:remaining])
+            else:
+                buf.extend(ids)
+
+            if len(buf) >= chunk_tokens or (target_tokens > 0 and written + len(buf) >= target_tokens):
+                arr = np.asarray(buf, dtype=dtype)
+                arr.tofile(f)
+                written += int(arr.size)
+                buf.clear()
+                dt = max(1e-9, time.time() - t0)
+                print(f"[{now()}] wrote={human_int(written)} tok rate={human_int(written / dt)}/s")
+
+            if target_tokens > 0 and written >= target_tokens:
+                break
+
+        if buf and (target_tokens <= 0 or written < target_tokens):
+            if target_tokens > 0:
+                buf = buf[: target_tokens - written]
+            arr = np.asarray(buf, dtype=dtype)
+            arr.tofile(f)
+            written += int(arr.size)
+
+    meta = {
+        "path": str(data_path),
+        "dtype": dtype.name,
+        "num_tokens": int(written),
+        "vocab_size": int(args.vocab_size),
+        "tokenizer_path": str(Path(args.tokenizer_dir) / f"byte_bpe_vocab{args.vocab_size}.json"),
+        "dataset_name": args.dataset_name,
+        "dataset_config": args.dataset_config,
+        "dataset_split": args.dataset_split,
+    }
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2)
+    print(f"[{now()}] saved token metadata to {meta_path}")
+
+
 def build_or_load_val_blocks(args: argparse.Namespace, tok: Tokenizer) -> torch.Tensor:
+    if args.data_bin:
+        meta = load_token_bin_metadata(args)
+        dtype = np.dtype(str(meta.get("dtype", token_dtype_for_vocab(args.vocab_size).name)))
+        num_tokens = int(meta["num_tokens"])
+        block_len = args.seq_len + 1
+        if num_tokens <= block_len:
+            raise ValueError(f"--data_bin has too few tokens: {num_tokens}")
+        val_tokens = max(block_len * max(1, args.val_blocks), int(num_tokens * 0.002))
+        val_tokens = min(val_tokens, max(0, num_tokens - block_len - 1))
+        lo = max(0, num_tokens - val_tokens - block_len)
+        hi = max(lo + 1, num_tokens - block_len)
+        rng = np.random.default_rng(args.seed + 500)
+        data = np.memmap(args.data_bin, dtype=dtype, mode="r", shape=(num_tokens,))
+        blocks = []
+        for _ in range(args.val_blocks):
+            start = int(rng.integers(lo, hi))
+            arr = np.asarray(data[start : start + block_len], dtype=np.int64)
+            blocks.append(torch.from_numpy(arr.copy()).long())
+        return torch.stack(blocks, dim=0)
+
     val_dir = safe_mkdir(args.cache_dir)
     val_path = val_dir / f"val_blocks_vocab{args.vocab_size}_seq{args.seq_len}_n{args.val_blocks}.pt"
     if val_path.exists() and not args.rebuild_val:
@@ -1694,7 +1837,11 @@ def train_one_experiment(
         start_step, best_val, _ = load_checkpoint_for_training(args.resume, model, optimizer, scaler, device=device)
         print(f"[{now()}] resumed from {args.resume} at step={start_step} best_val={best_val:.4f}")
 
-    dataset = PackedTokenDataset(args, tok, seed=args.seed + 300, skip_texts=args.train_skip_texts)
+    if args.data_bin:
+        dataset = MemmapTokenDataset(args, split="train", seed=args.seed + 300)
+        print(f"[{now()}] using pretokenized data bin: {args.data_bin}")
+    else:
+        dataset = PackedTokenDataset(args, tok, seed=args.seed + 300, skip_texts=args.train_skip_texts)
     loader = DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -1967,7 +2114,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Single-file 5M parameter MIRROR-AR objective lab")
 
     # Mode / output
-    p.add_argument("--mode", choices=["sweep", "train", "generate", "tokenizer"], default="sweep")
+    p.add_argument("--mode", choices=["sweep", "train", "generate", "tokenizer", "prepare_tokens"], default="sweep")
     p.add_argument("--out_dir", type=str, default="runs_mirror5m")
     p.add_argument("--cache_dir", type=str, default="cache_mirror5m")
     p.add_argument("--tokenizer_dir", type=str, default="tokenizer_mirror5m")
@@ -1986,6 +2133,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--val_skip_texts", type=int, default=2_000)
     p.add_argument("--val_blocks", type=int, default=256)
     p.add_argument("--rebuild_val", action="store_true")
+    p.add_argument("--data_bin", type=str, default="", help="optional pretokenized uint16/uint32 token binary for fast training")
+    p.add_argument("--data_meta", type=str, default="", help="metadata JSON for --data_bin; inferred as data_bin + .json if empty")
+    p.add_argument("--prepare_tokens", type=int, default=0, help="for --mode prepare_tokens, number of tokens to write; 0 means unlimited stream")
+    p.add_argument("--prepare_chunk_tokens", type=int, default=1_000_000)
 
     # Tokenizer
     p.add_argument("--vocab_size", type=int, default=4096)
@@ -2082,6 +2233,11 @@ def main() -> None:
 
     if args.mode == "tokenizer":
         train_or_load_tokenizer(args)
+        return
+
+    if args.mode == "prepare_tokens":
+        tok = train_or_load_tokenizer(args)
+        prepare_token_bin(args, tok)
         return
 
     if args.mode == "generate":
