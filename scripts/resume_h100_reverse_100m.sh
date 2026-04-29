@@ -16,18 +16,25 @@ CACHE_DIR="${CACHE_DIR:-cache_h100_reverse_100m}"
 TOKENIZER_DIR="${TOKENIZER_DIR:-tokenizer_h100_reverse_8192}"
 LOG_DIR="${LOG_DIR:-logs}"
 MODEL_NAME="${MODEL_NAME:-h100_reverse_100m_resume}"
+EXPERIMENT="${EXPERIMENT:-reverse_only}"
 
 ADDITIONAL_TOKENS="${ADDITIONAL_TOKENS:-3000000000}"
-BATCH_SIZE="${BATCH_SIZE:-256}"
+BATCH_SIZE="${BATCH_SIZE:-128}"
 GRAD_ACCUM_STEPS="${GRAD_ACCUM_STEPS:-1}"
-SEQ_LEN="${SEQ_LEN:-512}"
+SEQ_LEN="${SEQ_LEN:-1024}"
+SEQ_LEN_SCHEDULE="${SEQ_LEN_SCHEDULE:-}"
 
 VOCAB_SIZE="${VOCAB_SIZE:-8192}"
 D_MODEL="${D_MODEL:-768}"
 N_LAYERS="${N_LAYERS:-12}"
 N_HEADS="${N_HEADS:-12}"
-FFN_HIDDEN="${FFN_HIDDEN:-2304}"
+N_KV_HEADS="${N_KV_HEADS:-4}"
+FFN_HIDDEN="${FFN_HIDDEN:-2560}"
 DROPOUT="${DROPOUT:-0.0}"
+ATTENTION_PATTERN="${ATTENTION_PATTERN:-local_global}"
+SLIDING_WINDOW="${SLIDING_WINDOW:-512}"
+GLOBAL_EVERY="${GLOBAL_EVERY:-6}"
+ATTENTION_BACKEND="${ATTENTION_BACKEND:-auto}"
 
 LEARNING_RATE="${LEARNING_RATE:-4e-5}"
 MIN_LR="${MIN_LR:-4e-5}"
@@ -72,6 +79,7 @@ ACTUAL_ADDITIONAL_TOKENS=$((ADDITIONAL_STEPS * TOKENS_PER_STEP))
 ACTUAL_TOTAL_TOKENS=$((FINAL_STEPS * TOKENS_PER_STEP))
 
 echo "H100 reverse-only 100M resume"
+echo "experiment=$EXPERIMENT"
 echo "resume=$RESUME"
 echo "previous_steps=$PREVIOUS_STEPS"
 echo "additional_tokens_target=$ADDITIONAL_TOKENS"
@@ -80,6 +88,11 @@ echo "additional_steps=$ADDITIONAL_STEPS"
 echo "final_absolute_steps=$FINAL_STEPS"
 echo "actual_additional_tokens=$ACTUAL_ADDITIONAL_TOKENS"
 echo "actual_total_tokens_after_run=$ACTUAL_TOTAL_TOKENS"
+echo "model d=$D_MODEL layers=$N_LAYERS heads=$N_HEADS kv_heads=$N_KV_HEADS ffn=$FFN_HIDDEN vocab=$VOCAB_SIZE seq=$SEQ_LEN"
+echo "attention pattern=$ATTENTION_PATTERN window=$SLIDING_WINDOW global_every=$GLOBAL_EVERY backend=$ATTENTION_BACKEND"
+if [ -n "$SEQ_LEN_SCHEDULE" ]; then
+  echo "seq_len_schedule=$SEQ_LEN_SCHEDULE"
+fi
 
 EXTRA_FLAGS=()
 if [ "$COMPILE" = "1" ]; then
@@ -93,7 +106,7 @@ LOG_PATH="$LOG_DIR/${MODEL_NAME}_$(date +%Y%m%d_%H%M%S).log"
 
 "$PYTHON_BIN" -u reverse_token_prediction_lab.py \
   --mode train \
-  --experiment reverse_only \
+  --experiment "$EXPERIMENT" \
   --resume "$RESUME" \
   --steps_per_experiment "$FINAL_STEPS" \
   --eval_interval "$EVAL_INTERVAL" \
@@ -113,9 +126,15 @@ LOG_PATH="$LOG_DIR/${MODEL_NAME}_$(date +%Y%m%d_%H%M%S).log"
   --d_model "$D_MODEL" \
   --n_layers "$N_LAYERS" \
   --n_heads "$N_HEADS" \
+  --n_kv_heads "$N_KV_HEADS" \
   --ffn_hidden "$FFN_HIDDEN" \
   --dropout "$DROPOUT" \
   --seq_len "$SEQ_LEN" \
+  --seq_len_schedule "$SEQ_LEN_SCHEDULE" \
+  --attention_pattern "$ATTENTION_PATTERN" \
+  --sliding_window "$SLIDING_WINDOW" \
+  --global_every "$GLOBAL_EVERY" \
+  --attention_backend "$ATTENTION_BACKEND" \
   --vocab_size "$VOCAB_SIZE" \
   --tokenizer_dir "$TOKENIZER_DIR" \
   --out_dir "$OUT_DIR" \

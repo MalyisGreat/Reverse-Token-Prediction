@@ -58,13 +58,30 @@ A roughly 100M parameter model should improve:
 
 It will probably not become a normal chatbot without instruction or rationale fine-tuning.
 
+## H100 Architecture Update
+
+The H100 trainer now includes the strongest low-risk ideas from Gemma 3/4 and DeepSeek V3/V4 while keeping the experiment a reverse language model:
+
+- grouped-query attention with `n_heads=12` and `n_kv_heads=4`
+- hybrid local/global attention
+- a 5:1 local-to-global layer pattern with the final layer always global
+- local sliding windows defaulting to 512 tokens
+- optional FlashAttention backend for true fast local-window attention
+- optional sequence-length curriculum via `--seq_len_schedule`
+- optional reverse MTP control through the `reverse_mtp2_low` experiment
+
+The default H100 launch uses `seq_len=1024`, `batch_size=128`, `d_model=768`, `n_layers=12`, and `ffn_hidden=2560`, which keeps the model near the 100M parameter target after GQA removes KV projection weights.
+
+For a new H100 box, run `scripts/bench_h100_attention.sh` first. If FlashAttention is not installed, PyTorch SDPA may make the local-window variant slower than global attention even though it is architecturally better for long-context scaling.
+
 ## Recommended Experiment Sequence
 
-1. Train reverse-only 100M on raw web text.
-2. Sample a fixed bank of ending anchors every validation checkpoint.
-3. Compare repetition, coherence, and suffix adherence across checkpoints.
-4. Fine-tune on QA/rationale examples with answer endings.
-5. Generate multiple traces per fixed answer and score them with an external verifier.
+1. Run the H100 attention benchmark.
+2. Train reverse-only 100M on raw web text with the fastest stable attention profile.
+3. Sample a fixed bank of ending anchors every validation checkpoint.
+4. Compare repetition, coherence, and suffix adherence across checkpoints.
+5. Optionally run `EXPERIMENT=reverse_mtp2_low` as a small auxiliary-loss ablation.
+6. Later, fine-tune on QA/rationale examples with answer endings and validate traces separately.
 
 ## Important Failure Mode
 

@@ -93,9 +93,16 @@ try:
 except Exception:  # pragma: no cover
     tqdm = None
 
+try:
+    from flash_attn import flash_attn_func
+except Exception:  # pragma: no cover
+    flash_attn_func = None
+
 
 SPECIAL_TOKENS = ["<pad>", "<unk>", "<bos>", "<eos>", "<fwd>", "<rev>"]
 PAD, UNK, BOS, EOS, FWD, REV = SPECIAL_TOKENS
+
+SDPA_HAS_ENABLE_GQA = "enable_gqa" in (getattr(F.scaled_dot_product_attention, "__doc__", "") or "")
 
 TOY_CORPUS = [
     "The cat went on a walk and found a quiet garden behind the old library.",
@@ -182,6 +189,57 @@ def parse_int_list(s: str) -> List[int]:
     if s is None or not str(s).strip():
         return []
     return [int(x.strip()) for x in str(s).split(",") if x.strip()]
+
+
+def parse_seq_len_schedule(schedule: str, total_steps: int, max_seq_len: int) -> List[Tuple[int, int]]:
+    if not schedule or not schedule.strip():
+        return [(0, max_seq_len)]
+    entries: List[Tuple[int, int]] = []
+    for item in schedule.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        parts = item.replace("@", ":").split(":")
+        if len(parts) == 1:
+            seq_len = int(parts[0])
+            start_step = 0
+        elif len(parts) == 2:
+            seq_len = int(parts[0])
+            marker = parts[1].strip()
+            if "." in marker:
+                start_step = int(float(marker) * total_steps)
+            else:
+                start_step = int(marker)
+        else:
+            raise ValueError(f"bad --seq_len_schedule entry {item!r}")
+        if seq_len <= 0:
+            raise ValueError("--seq_len_schedule sequence lengths must be positive")
+        if seq_len > max_seq_len:
+            raise ValueError(f"--seq_len_schedule asks for {seq_len}, but --seq_len is only {max_seq_len}")
+        entries.append((max(0, start_step), seq_len))
+    if not entries:
+        return [(0, max_seq_len)]
+    return sorted(entries, key=lambda x: x[0])
+
+
+def seq_len_at_step(args: argparse.Namespace, step: int, total_steps: int) -> int:
+    schedule = parse_seq_len_schedule(args.seq_len_schedule, total_steps, args.seq_len)
+    current = schedule[0][1]
+    for start_step, seq_len in schedule:
+        if step >= start_step:
+            current = seq_len
+        else:
+            break
+    return current
+
+
+def crop_batch_to_seq_len(batch: torch.Tensor, seq_len: int) -> torch.Tensor:
+    target_len = seq_len + 1
+    if batch.size(1) <= target_len:
+        return batch
+    max_start = batch.size(1) - target_len
+    start = int(torch.randint(0, max_start + 1, (1,), device=batch.device).item())
+    return batch[:, start : start + target_len]
 
 
 def lr_at_step(step: int, total_steps: int, base_lr: float, min_lr: float, warmup_steps: int) -> float:
@@ -423,33 +481,103 @@ class RotaryEmbedding(nn.Module):
 
 
 class CausalSelfAttention(nn.Module):
-    def __init__(self, d_model: int, n_heads: int, dropout: float, max_seq_len: int):
+    def __init__(
+        self,
+        d_model: int,
+        n_heads: int,
+        dropout: float,
+        max_seq_len: int,
+        n_kv_heads: int = 0,
+        attention_kind: str = "global",
+        sliding_window: int = 0,
+        attention_backend: str = "sdpa",
+    ):
         super().__init__()
         if d_model % n_heads != 0:
             raise ValueError("d_model must be divisible by n_heads")
+        if n_kv_heads <= 0:
+            n_kv_heads = n_heads
+        if n_heads % n_kv_heads != 0:
+            raise ValueError("n_heads must be divisible by n_kv_heads")
+        if attention_kind not in {"global", "local"}:
+            raise ValueError(f"unknown attention_kind {attention_kind!r}")
+        if attention_backend not in {"sdpa", "flash_attn", "auto"}:
+            raise ValueError(f"unknown attention_backend {attention_backend!r}")
         self.d_model = d_model
         self.n_heads = n_heads
+        self.n_kv_heads = n_kv_heads
+        self.kv_repeat = n_heads // n_kv_heads
         self.head_dim = d_model // n_heads
-        self.qkv = nn.Linear(d_model, 3 * d_model, bias=False)
+        self.kv_dim = n_kv_heads * self.head_dim
+        self.qkv = nn.Linear(d_model, d_model + 2 * self.kv_dim, bias=False)
         self.out = nn.Linear(d_model, d_model, bias=False)
         self.dropout = dropout
+        self.attention_kind = attention_kind
+        self.sliding_window = int(sliding_window)
+        self.attention_backend = attention_backend
         self.rope = RotaryEmbedding(self.head_dim, max_seq_len=max_seq_len)
+        if attention_kind == "local":
+            if self.sliding_window <= 0:
+                raise ValueError("local attention requires --sliding_window > 0")
+            pos = torch.arange(max_seq_len)
+            q_pos = pos[:, None]
+            k_pos = pos[None, :]
+            mask = (k_pos <= q_pos) & (k_pos >= q_pos - (self.sliding_window - 1))
+            self.register_buffer("local_mask", mask, persistent=False)
+        else:
+            self.local_mask = None
+
+    def _use_flash_attn(self, x: torch.Tensor) -> bool:
+        if self.attention_backend == "sdpa":
+            return False
+        if flash_attn_func is None:
+            return False
+        return x.is_cuda
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         b, t, c = x.shape
         qkv = self.qkv(x)
-        q, k, v = qkv.chunk(3, dim=-1)
+        q, k, v = qkv.split([self.d_model, self.kv_dim, self.kv_dim], dim=-1)
         q = q.view(b, t, self.n_heads, self.head_dim).transpose(1, 2)
-        k = k.view(b, t, self.n_heads, self.head_dim).transpose(1, 2)
-        v = v.view(b, t, self.n_heads, self.head_dim).transpose(1, 2)
+        k = k.view(b, t, self.n_kv_heads, self.head_dim).transpose(1, 2)
+        v = v.view(b, t, self.n_kv_heads, self.head_dim).transpose(1, 2)
         q, k = self.rope(q, k)
+
+        if self._use_flash_attn(x):
+            window_size = (-1, -1)
+            if self.attention_kind == "local":
+                window_size = (self.sliding_window - 1, 0)
+            y = flash_attn_func(
+                q.transpose(1, 2).contiguous(),
+                k.transpose(1, 2).contiguous(),
+                v.transpose(1, 2).contiguous(),
+                dropout_p=self.dropout if self.training else 0.0,
+                causal=True,
+                window_size=window_size,
+            )
+            return self.out(y.reshape(b, t, c))
+
+        attn_mask = None
+        is_causal = True
+        if self.attention_kind == "local":
+            attn_mask = self.local_mask[:t, :t]
+            is_causal = False
+
+        if self.n_kv_heads != self.n_heads and not SDPA_HAS_ENABLE_GQA:
+            k = k.repeat_interleave(self.kv_repeat, dim=1)
+            v = v.repeat_interleave(self.kv_repeat, dim=1)
+
+        sdpa_kwargs = {}
+        if self.n_kv_heads != self.n_heads and SDPA_HAS_ENABLE_GQA:
+            sdpa_kwargs["enable_gqa"] = True
         y = F.scaled_dot_product_attention(
             q,
             k,
             v,
-            attn_mask=None,
+            attn_mask=attn_mask,
             dropout_p=self.dropout if self.training else 0.0,
-            is_causal=True,
+            is_causal=is_causal,
+            **sdpa_kwargs,
         )
         y = y.transpose(1, 2).contiguous().view(b, t, c)
         return self.out(y)
@@ -496,10 +624,31 @@ class DirectionAdapter(nn.Module):
 
 
 class TransformerBlock(nn.Module):
-    def __init__(self, d_model: int, n_heads: int, ffn_hidden: int, dropout: float, max_seq_len: int, adapter_rank: int):
+    def __init__(
+        self,
+        d_model: int,
+        n_heads: int,
+        ffn_hidden: int,
+        dropout: float,
+        max_seq_len: int,
+        adapter_rank: int,
+        n_kv_heads: int,
+        attention_kind: str,
+        sliding_window: int,
+        attention_backend: str,
+    ):
         super().__init__()
         self.norm1 = RMSNorm(d_model)
-        self.attn = CausalSelfAttention(d_model, n_heads, dropout, max_seq_len)
+        self.attn = CausalSelfAttention(
+            d_model,
+            n_heads,
+            dropout,
+            max_seq_len,
+            n_kv_heads=n_kv_heads,
+            attention_kind=attention_kind,
+            sliding_window=sliding_window,
+            attention_backend=attention_backend,
+        )
         self.norm2 = RMSNorm(d_model)
         self.mlp = SwiGLU(d_model, ffn_hidden, dropout)
         self.drop = nn.Dropout(dropout)
@@ -525,25 +674,52 @@ class TinyMirrorLM(nn.Module):
         d_model: int = 192,
         n_layers: int = 10,
         n_heads: int = 6,
+        n_kv_heads: int = 0,
         ffn_hidden: int = 512,
         max_seq_len: int = 257,
         dropout: float = 0.1,
         adapter_rank: int = 16,
         max_mtp_k: int = 4,
+        attention_pattern: str = "global",
+        sliding_window: int = 0,
+        global_every: int = 6,
+        attention_backend: str = "sdpa",
     ):
         super().__init__()
+        if attention_pattern not in {"global", "local", "local_global"}:
+            raise ValueError(f"unknown attention_pattern {attention_pattern!r}")
         self.vocab_size = vocab_size
         self.d_model = d_model
         self.n_layers = n_layers
+        self.n_heads = n_heads
+        self.n_kv_heads = n_heads if n_kv_heads <= 0 else n_kv_heads
         self.max_seq_len = max_seq_len
         self.max_mtp_k = max_mtp_k
+        self.attention_pattern = attention_pattern
+        self.sliding_window = sliding_window
+        self.global_every = global_every
+        self.attention_backend = attention_backend
 
         self.tok_emb = nn.Embedding(vocab_size, d_model)
         self.dir_emb = nn.Embedding(2, d_model)
         self.drop = nn.Dropout(dropout)
-        self.blocks = nn.ModuleList(
-            [TransformerBlock(d_model, n_heads, ffn_hidden, dropout, max_seq_len, adapter_rank) for _ in range(n_layers)]
-        )
+        self.blocks = nn.ModuleList()
+        for layer_idx in range(n_layers):
+            attention_kind = self._attention_kind_for_layer(layer_idx)
+            self.blocks.append(
+                TransformerBlock(
+                    d_model,
+                    n_heads,
+                    ffn_hidden,
+                    dropout,
+                    max_seq_len,
+                    adapter_rank,
+                    n_kv_heads=self.n_kv_heads,
+                    attention_kind=attention_kind,
+                    sliding_window=sliding_window,
+                    attention_backend=attention_backend,
+                )
+            )
         self.norm = RMSNorm(d_model)
 
         # Auxiliary heads. They are present for all experiments so checkpoints are compatible.
@@ -568,6 +744,17 @@ class TinyMirrorLM(nn.Module):
             [nn.Linear(d_model, d_model, bias=False) for _ in range(max(0, max_mtp_k - 1))]
         )
         self.apply(self._init_weights)
+
+    def _attention_kind_for_layer(self, layer_idx: int) -> str:
+        if self.attention_pattern == "global":
+            return "global"
+        if self.attention_pattern == "local":
+            return "local"
+        if layer_idx == self.n_layers - 1:
+            return "global"
+        if self.global_every > 0 and (layer_idx + 1) % self.global_every == 0:
+            return "global"
+        return "local"
 
     def _init_weights(self, module: nn.Module) -> None:
         if isinstance(module, nn.Linear):
@@ -661,6 +848,13 @@ def get_experiment_catalog() -> Dict[str, Experiment]:
             name="reverse_only",
             primary_direction=1,
             notes="pure reverse causal LM: train on xT..x0 and predict the previous original token",
+        ),
+        "reverse_mtp2_low": Experiment(
+            name="reverse_mtp2_low",
+            primary_direction=1,
+            mtp_weight=0.04,
+            mtp_k=2,
+            notes="reverse LM plus weak second-previous-token prediction auxiliary loss",
         ),
         "fwd_token_only": Experiment(
             name="fwd_token_only",
@@ -1247,26 +1441,24 @@ def compute_losses(
         total = total + exp.align_weight * loss_align
 
     if exp.mtp_weight > 0:
-        if primary_direction != 0:
-            raise ValueError("MTP objective is only defined for forward-primary experiments")
-        assert fwd_h is not None
+        primary_seq = batch if primary_direction == 0 else torch.flip(batch, dims=[1])
         mtp_w = scheduled_weight(exp.mtp_weight, step, total_steps, "mtp_ramp", args)
         mtp_losses = []
-        block_len = batch.size(1)
+        block_len = primary_seq.size(1)
         for k in range(2, min(exp.mtp_k, args.max_mtp_k) + 1):
             if exp.use_direction_token:
-                # With a prefix token, h[:, p] normally predicts batch[:, p].
-                # The k-token target is therefore batch[:, p + k - 1].
+                # With a prefix token, h[:, p] normally predicts seq[:, p].
+                # The k-token target is therefore seq[:, p + k - 1].
                 valid = block_len - (k - 1)
-                labels_k = batch[:, k - 1 :]
+                labels_k = primary_seq[:, k - 1 :]
             else:
                 # Without a prefix token, h after x_p predicts x_{p+1};
                 # the k-token target is x_{p+k}.
                 valid = block_len - k
-                labels_k = batch[:, k:]
+                labels_k = primary_seq[:, k:]
             if valid <= 0:
                 continue
-            logits_k = model.mtp_logits(fwd_h[:, :valid, :], k=k)
+            logits_k = model.mtp_logits(primary_h[:, :valid, :], k=k)
             mtp_losses.append(cross_entropy_loss(logits_k, labels_k))
         if mtp_losses:
             loss_mtp = torch.stack(mtp_losses).mean()
@@ -1357,11 +1549,16 @@ def make_model(args: argparse.Namespace, vocab_size: int) -> TinyMirrorLM:
         d_model=args.d_model,
         n_layers=args.n_layers,
         n_heads=args.n_heads,
+        n_kv_heads=args.n_kv_heads,
         ffn_hidden=args.ffn_hidden,
         max_seq_len=args.seq_len + 1,
         dropout=args.dropout,
         adapter_rank=args.adapter_rank,
         max_mtp_k=args.max_mtp_k,
+        attention_pattern=args.attention_pattern,
+        sliding_window=args.sliding_window,
+        global_every=args.global_every,
+        attention_backend=args.attention_backend,
     )
     return model
 
@@ -1469,6 +1666,11 @@ def train_one_experiment(
 
     n_params = count_params(model._orig_mod if hasattr(model, "_orig_mod") else model)
     print(f"\n[{now()}] experiment={exp.name} params={human_int(n_params)} notes={exp.notes}")
+    print(
+        f"[{now()}] attention pattern={args.attention_pattern} "
+        f"heads={args.n_heads} kv_heads={args.n_kv_heads if args.n_kv_heads > 0 else args.n_heads} "
+        f"window={args.sliding_window} global_every={args.global_every} backend={args.attention_backend}"
+    )
 
     opt_kwargs = dict(
         lr=args.learning_rate,
@@ -1531,6 +1733,8 @@ def train_one_experiment(
                 data_iter = iter(loader)
                 batch = next(data_iter)
             batch = batch.to(device, non_blocking=True)
+            effective_seq_len = seq_len_at_step(args, step, args.steps_per_experiment)
+            batch = crop_batch_to_seq_len(batch, effective_seq_len)
             tokens_since_log += batch.numel()
 
             with autocast_context(device, enabled=args.amp, dtype_name=getattr(args, "amp_dtype", "float16")):
@@ -1575,6 +1779,7 @@ def train_one_experiment(
                 f"bridge={meters.get('bridge', 0.0):.4f} "
                 f"mtp={meters.get('mtp', 0.0):.4f} "
                 f"mixrev={meters.get('rev_frac', 0.0):.2f} "
+                f"seq={seq_len_at_step(args, step, args.steps_per_experiment)} "
                 f"lr={lr:.2e} gn={grad_norm_f:.2f} tok/s={human_int(toks_per_sec)}"
             )
             print(msg)
@@ -1790,13 +1995,19 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
     # Model: default is about 5.3M params with vocab 4096.
     p.add_argument("--seq_len", type=int, default=256)
+    p.add_argument("--seq_len_schedule", type=str, default="", help="optional curriculum like 512:0,1024:0.25,2048:0.60; max must fit --seq_len")
     p.add_argument("--d_model", type=int, default=192)
     p.add_argument("--n_layers", type=int, default=10)
     p.add_argument("--n_heads", type=int, default=6)
+    p.add_argument("--n_kv_heads", type=int, default=0, help="0 means full multi-head attention; lower values enable GQA")
     p.add_argument("--ffn_hidden", type=int, default=512)
     p.add_argument("--dropout", type=float, default=0.10)
     p.add_argument("--adapter_rank", type=int, default=16)
     p.add_argument("--max_mtp_k", type=int, default=4)
+    p.add_argument("--attention_pattern", choices=["global", "local", "local_global"], default="global")
+    p.add_argument("--sliding_window", type=int, default=0, help="tokens visible to local attention layers")
+    p.add_argument("--global_every", type=int, default=6, help="for local_global, every Nth layer is global and the final layer is always global")
+    p.add_argument("--attention_backend", choices=["sdpa", "flash_attn", "auto"], default="sdpa")
 
     # Training: 2080 Ti-friendly defaults.
     p.add_argument("--device", type=str, default="auto")

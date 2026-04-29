@@ -21,8 +21,13 @@ PYTHON_BIN="${PYTHON_BIN:-python3}"
   --d_model 64 \
   --n_layers 2 \
   --n_heads 4 \
+  --n_kv_heads 2 \
   --ffn_hidden 128 \
   --seq_len 64 \
+  --attention_pattern local_global \
+  --sliding_window 16 \
+  --global_every 2 \
+  --attention_backend sdpa \
   --vocab_size 512 \
   --tokenizer_train_texts 64 \
   --out_dir runs_smoke \
