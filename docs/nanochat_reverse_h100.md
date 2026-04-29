@@ -94,6 +94,12 @@ ANCHOR="and that was the strange part." \
 bash runs/reverse_sample.sh
 ```
 
+Run a factual history probe with several known anchors:
+
+```bash
+MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_history_probe.sh
+```
+
 ## 5xH100 Fallback
 
 Run from the vendored nanochat folder on a Linux 5xH100 node:
@@ -168,6 +174,12 @@ The shorter wrapper is:
 MODEL_TAG=reverse_d24_ratio8 \
 ANCHOR="the answer is 42." \
 bash runs/reverse_sample.sh
+```
+
+For a stronger factual probe, use the history wrapper instead of a bare anchor:
+
+```bash
+MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_history_probe.sh
 ```
 
 The anchor is normal forward text. The script reverses the anchor tokens, samples in reverse order, then flips the full token stream back into readable text.

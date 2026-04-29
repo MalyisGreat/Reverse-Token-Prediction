@@ -116,10 +116,9 @@ torchrun --standalone --nproc_per_node="$NPROC_PER_NODE" -m scripts.base_train -
 RUN_FINAL_SAMPLE="${RUN_FINAL_SAMPLE:-1}"
 if [ "$RUN_FINAL_SAMPLE" != "0" ]; then
   MODEL_TAG="$MODEL_TAG" \
-  ANCHOR="${SAMPLE_ANCHOR:-the answer is 42.}" \
-  NUM_SAMPLES="${SAMPLE_COUNT:-4}" \
+  NUM_SAMPLES="${SAMPLE_COUNT:-2}" \
   MAX_TOKENS="${SAMPLE_MAX_TOKENS:-128}" \
-    bash runs/reverse_sample.sh
+    bash runs/reverse_history_probe.sh
 fi
 
 python -m nanochat.report generate

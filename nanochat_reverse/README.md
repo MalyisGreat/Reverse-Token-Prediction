@@ -6,8 +6,9 @@
 > reverse run. `runs/reverse_speedrun_5xh100.sh` is a fallback for five-GPU
 > rentals. W&B is optional; leave `WANDB_RUN` unset or use `WANDB_RUN=dummy`
 > for terminal-only logs. Use `bash runs/reverse_sample.sh` to sample text
-> that leads into an ending anchor, and `bash runs/reverse_watch.sh` to watch
-> logs/checkpoints without W&B.
+> that leads into an ending anchor, `bash runs/reverse_history_probe.sh` for
+> factual history anchors, and `bash runs/reverse_watch.sh` to watch logs and
+> checkpoints without W&B.
 
 ![nanochat logo](dev/nanochat.png)
 ![scaling laws](dev/scaling_laws_jan26.png)
