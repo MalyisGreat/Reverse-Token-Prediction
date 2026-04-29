@@ -1,4 +1,5 @@
 datasets>=2.20
+hf_xet>=1.1
 numpy>=1.26
 tensorboard>=2.16
 tokenizers>=0.19

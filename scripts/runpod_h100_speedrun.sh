@@ -12,6 +12,14 @@ export VOCAB_SIZE="${VOCAB_SIZE:-8192}"
 export DATA_BIN="${DATA_BIN:-$DATA_DIR/fineweb_edu_vocab${VOCAB_SIZE}_${PREPARE_TOKENS}.bin}"
 export DATA_META="${DATA_META:-$DATA_BIN.json}"
 
+export HF_HOME="${HF_HOME:-/workspace/.cache/huggingface}"
+export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-$HF_HOME/datasets}"
+export HF_HUB_CACHE="${HF_HUB_CACHE:-$HF_HOME/hub}"
+export HF_XET_CACHE="${HF_XET_CACHE:-$HF_HOME/xet}"
+export HF_XET_HIGH_PERFORMANCE="${HF_XET_HIGH_PERFORMANCE:-1}"
+export HF_XET_NUM_CONCURRENT_RANGE_GETS="${HF_XET_NUM_CONCURRENT_RANGE_GETS:-64}"
+export HF_HUB_DOWNLOAD_TIMEOUT="${HF_HUB_DOWNLOAD_TIMEOUT:-60}"
+
 export FLASH_ATTN_INSTALL="${FLASH_ATTN_INSTALL:-1}"
 export COMPILE="${COMPILE:-1}"
 export NO_TENSORBOARD="${NO_TENSORBOARD:-1}"
@@ -34,6 +42,9 @@ echo "RunPod H100 speedrun"
 echo "target_tokens=$TARGET_TOKENS"
 echo "prepare_tokens=$PREPARE_TOKENS"
 echo "data_bin=$DATA_BIN"
+echo "hf_home=$HF_HOME"
+
+mkdir -p "$DATA_DIR" "$HF_HOME" "$HF_DATASETS_CACHE" "$HF_HUB_CACHE" "$HF_XET_CACHE"
 
 bash scripts/setup_h100_env.sh
 source .venv/bin/activate
