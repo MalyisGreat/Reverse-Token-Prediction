@@ -7,7 +7,9 @@ set -euo pipefail
 #   runpod/pytorch:1.0.3-cu1290-torch291-ubuntu2204
 # It keeps nanochat's high-throughput pretraining stack, but trains the base
 # model on BOS + reversed token rows so the causal objective predicts the
-# previous token instead of the next token.
+# previous token instead of the next token. RunPod PyTorch images often do not
+# include FA3, so the default attention pattern is full-context "L", which is
+# much faster than nanochat's sliding-window "SSSL" pattern under SDPA fallback.
 
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$HOME/.cache/nanochat_reverse}"
@@ -28,6 +30,7 @@ DEPTH="${DEPTH:-24}"
 TARGET_PARAM_DATA_RATIO="${TARGET_PARAM_DATA_RATIO:-8}"
 DEVICE_BATCH_SIZE="${DEVICE_BATCH_SIZE:-16}"
 NPROC_PER_NODE="${NPROC_PER_NODE:-8}"
+WINDOW_PATTERN="${WINDOW_PATTERN:-L}"
 MODEL_TAG="${MODEL_TAG:-reverse_d${DEPTH}_ratio${TARGET_PARAM_DATA_RATIO}}"
 RUN_LOG="${RUN_LOG:-$LOG_DIR/${MODEL_TAG}_$(date +%Y%m%d_%H%M%S).log}"
 DATA_SHARDS_BOOTSTRAP="${DATA_SHARDS_BOOTSTRAP:-8}"
@@ -46,7 +49,7 @@ echo "logging to $RUN_LOG"
 echo "nanochat reverse H100 run"
 echo "base_dir=$NANOCHAT_BASE_DIR"
 echo "model_tag=$MODEL_TAG"
-echo "depth=$DEPTH ratio=$TARGET_PARAM_DATA_RATIO nproc=$NPROC_PER_NODE device_batch=$DEVICE_BATCH_SIZE"
+echo "depth=$DEPTH ratio=$TARGET_PARAM_DATA_RATIO nproc=$NPROC_PER_NODE device_batch=$DEVICE_BATCH_SIZE window_pattern=$WINDOW_PATTERN"
 echo "data_shards=$DATA_SHARDS save_every=$SAVE_EVERY eval_every=$EVAL_EVERY"
 if [ "$WANDB_RUN" = "dummy" ]; then
   echo "wandb=disabled (WANDB_RUN=dummy); use logs/checkpoints/reverse_sample.sh to inspect the run"
@@ -102,6 +105,7 @@ torchrun --standalone --nproc_per_node="$NPROC_PER_NODE" -m scripts.base_train -
   --depth="$DEPTH" \
   --target-param-data-ratio="$TARGET_PARAM_DATA_RATIO" \
   --device-batch-size="$DEVICE_BATCH_SIZE" \
+  --window-pattern="$WINDOW_PATTERN" \
   --model-tag="$MODEL_TAG" \
   --run="$WANDB_RUN" \
   --reverse-training \

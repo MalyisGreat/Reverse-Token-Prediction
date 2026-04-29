@@ -67,6 +67,7 @@ Defaults are intentionally close to nanochat's 8xH100 speedrun:
 - depth `24`
 - target param:data ratio `8`
 - device batch size `16`
+- `WINDOW_PATTERN=L` by default, because RunPod PyTorch images may not have Flash Attention 3 and nanochat's sliding-window `SSSL` pattern is very slow under SDPA fallback
 - local ClimbMix parquet shards, not live HF streaming during training
 - checkpoints under `$NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG`
 
@@ -85,6 +86,24 @@ Monitor it with:
 ```bash
 MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_watch.sh
 ```
+
+Watch just loss / validation / throughput with:
+
+```bash
+MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_loss.sh
+```
+
+Check whether FA3 is available on the pod with:
+
+```bash
+NANOCHAT_FA3_DEBUG=1 python - <<'PY'
+from nanochat.flash_attention import HAS_FA3, USE_FA3
+print("HAS_FA3", HAS_FA3)
+print("USE_FA3", USE_FA3)
+PY
+```
+
+If this prints `False`, run `WINDOW_PATTERN=L`. If it prints `True`, you can use `WINDOW_PATTERN=SSSL`.
 
 Sample the latest checkpoint with:
 
@@ -150,6 +169,7 @@ Checklist for a rental pod:
 - choose H100 SXM if possible, not PCIe, for best bandwidth
 - attach enough persistent disk for ClimbMix shards, checkpoints, logs, and tokenizer artifacts
 - make sure `nvidia-smi` shows all 8 GPUs before launch
+- if startup says `Flash Attention 3 not available`, use `WINDOW_PATTERN=L`; if FA3 is available, you can test `WINDOW_PATTERN=SSSL`
 - launch from `nanochat_reverse/`, not repo root
 - use `WANDB_RUN=...` if you want live loss plots outside the terminal
 - monitor `$NANOCHAT_BASE_DIR/logs/*.log` and `$NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG/`

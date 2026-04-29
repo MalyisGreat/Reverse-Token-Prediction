@@ -33,8 +33,16 @@ def _load_flash_attention_3():
         import os
         os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
         from kernels import get_kernel
-        return get_kernel('varunneal/flash-attention-3').flash_attn_interface
-    except Exception:
+        for kernel_name in ("varunneal/flash-attention-3", "kernels-community/flash-attn3"):
+            try:
+                return get_kernel(kernel_name).flash_attn_interface
+            except Exception as exc:
+                if os.environ.get("NANOCHAT_FA3_DEBUG", "0") == "1":
+                    print(f"Failed to load FA3 kernel {kernel_name}: {exc}")
+        return None
+    except Exception as exc:
+        if "os" in locals() and os.environ.get("NANOCHAT_FA3_DEBUG", "0") == "1":
+            print(f"Failed to initialize FA3: {exc}")
         return None
 
 
