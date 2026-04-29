@@ -4,6 +4,8 @@ Reverse Token Prediction trains a causal language model on text in the opposite 
 
 This repo packages the working reverse-only MIRROR experiment with H100-oriented launch scripts for a roughly 100M parameter model.
 
+It also vendors `karpathy/nanochat` under `nanochat_reverse/` for the higher-throughput 8xH100 path. The old single-file trainer remains the local research prototype; the nanochat fork is the cloud training path.
+
 ## Core Idea
 
 Normal causal LM:
@@ -53,6 +55,25 @@ TARGET_TOKENS=1000000000 bash scripts/runpod_h100_speedrun.sh
 ```
 
 That script installs the environment with FlashAttention enabled, builds a local pretokenized token binary under `/workspace/reverse_data`, runs a short attention benchmark, then starts training from the token binary. This is the recommended RunPod path because it avoids paying for H100 time while Python streams and tokenizes text every batch.
+
+## Nanochat 8xH100 Reverse Run
+
+For the full nanochat-based run on an 8xH100 node:
+
+```bash
+cd nanochat_reverse
+screen -L -Logfile reverse_speedrun.log -S reverse-nanochat \
+  bash runs/reverse_speedrun_8xh100.sh
+```
+
+This uses nanochat's training stack with a minimal reverse objective patch:
+
+```text
+input:  <|bos|> xT xT-1 xT-2 ...
+target:         xT-1 xT-2 xT-3 ...
+```
+
+See `docs/nanochat_reverse_h100.md` for launch knobs, checkpoint locations, and reverse-generation commands.
 
 The H100 launcher defaults to:
 
@@ -143,6 +164,8 @@ Bare anchors like `42` are intentionally weak and tend to produce bibliography/d
 - `scripts/smoke_test.sh` - toy local correctness check
 - `scripts/sample_reverse.sh` - suffix-conditioned generation
 - `docs/reverse_training_idea.md` - experiment rationale and expected behavior
+- `nanochat_reverse/` - vendored nanochat with `--reverse-training` and an 8xH100 launch script
+- `docs/nanochat_reverse_h100.md` - nanochat reverse H100 runbook
 
 ## Notes
 

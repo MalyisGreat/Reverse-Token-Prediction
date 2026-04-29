@@ -23,3 +23,7 @@ events.out.tfevents.*
 Thumbs.db
 .vscode/
 .idea/
+
+# Keep vendored nanochat launch scripts even though training artifact folders are ignored.
+!nanochat_reverse/runs/
+!nanochat_reverse/runs/*.sh
