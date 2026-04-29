@@ -1,0 +1,917 @@
+Using CPython 3.10.18 interpreter at: /usr/bin/python3.10
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+Resolved 130 packages in 1ms
+Downloading nvidia-cusolver-cu12 (255.1MiB)
+Downloading networkx (1.6MiB)
+Downloading rustbpe (1.0MiB)
+Downloading nvidia-cublas-cu12 (566.8MiB)
+Downloading aiohttp (1.6MiB)
+Downloading hf-xet (3.0MiB)
+Downloading nvidia-nvjitlink-cu12 (37.4MiB)
+Downloading pyarrow (40.8MiB)
+Downloading nvidia-cuda-cupti-cu12 (9.8MiB)
+Downloading nvidia-cufile-cu12 (1.1MiB)
+Downloading tiktoken (1.1MiB)
+Downloading sympy (6.0MiB)
+Downloading nvidia-cusparselt-cu12 (273.9MiB)
+Downloading pydantic-core (1.9MiB)
+Downloading wandb (18.7MiB)
+Downloading nvidia-curand-cu12 (60.7MiB)
+Downloading nvidia-nvshmem-cu12 (118.9MiB)
+Downloading nvidia-cudnn-cu12 (674.0MiB)
+Downloading nvidia-cufft-cu12 (184.2MiB)
+Downloading nvidia-cuda-nvrtc-cu12 (84.0MiB)
+Downloading numpy (17.4MiB)
+Downloading nvidia-nccl-cu12 (307.4MiB)
+Downloading triton (162.4MiB)
+Downloading nvidia-cusparse-cu12 (274.9MiB)
+Downloading pandas (11.8MiB)
+Downloading tokenizers (3.2MiB)
+Downloading torch (859.2MiB)
+ Downloading rustbpe
+ Downloading nvidia-cufile-cu12
+ Downloading tiktoken
+ Downloading aiohttp
+ Downloading pydantic-core
+ Downloading tokenizers
+ Downloading hf-xet
+ Downloading networkx
+ Downloading nvidia-cuda-cupti-cu12
+ Downloading numpy
+ Downloading nvidia-nvjitlink-cu12
+ Downloading wandb
+ Downloading sympy
+ Downloading nvidia-curand-cu12
+ Downloading nvidia-cuda-nvrtc-cu12
+ Downloading pandas
+ Downloading nvidia-nvshmem-cu12
+ Downloading pyarrow
+ Downloading nvidia-cufft-cu12
+ Downloading triton
+ Downloading nvidia-cusolver-cu12
+ Downloading nvidia-cusparse-cu12
+ Downloading nvidia-cusparselt-cu12
+ Downloading nvidia-nccl-cu12
+ Downloading nvidia-cublas-cu12
+ Downloading nvidia-cudnn-cu12
+ Downloading torch
+Prepared 81 packages in 38.96s
+Installed 81 packages in 187ms
+ + aiohappyeyeballs==2.6.1
+ + aiohttp==3.12.15
+ + aiosignal==1.4.0
+ + annotated-types==0.7.0
+ + anyio==4.10.0
+ + async-timeout==5.0.1
+ + attrs==25.3.0
+ + certifi==2025.8.3
+ + charset-normalizer==3.4.3
+ + click==8.2.1
+ + datasets==4.0.0
+ + dill==0.3.8
+ + exceptiongroup==1.3.0
+ + fastapi==0.117.1
+ + filelock==3.19.1
+ + frozenlist==1.7.0
+ + fsspec==2025.3.0
+ + gitdb==4.0.12
+ + gitpython==3.1.45
+ + h11==0.16.0
+ + hf-xet==1.1.9
+ + huggingface-hub==0.34.4
+ + idna==3.10
+ + jinja2==3.1.6
+ + kernels==0.11.7
+ + markupsafe==3.0.2
+ + mpmath==1.3.0
+ + multidict==6.6.4
+ + multiprocess==0.70.16
+ + networkx==3.4.2
+ + numpy==1.26.4
+ + nvidia-cublas-cu12==12.8.4.1
+ + nvidia-cuda-cupti-cu12==12.8.90
+ + nvidia-cuda-nvrtc-cu12==12.8.93
+ + nvidia-cuda-runtime-cu12==12.8.90
+ + nvidia-cudnn-cu12==9.10.2.21
+ + nvidia-cufft-cu12==11.3.3.83
+ + nvidia-cufile-cu12==1.13.1.3
+ + nvidia-curand-cu12==10.3.9.90
+ + nvidia-cusolver-cu12==11.7.3.90
+ + nvidia-cusparse-cu12==12.5.8.93
+ + nvidia-cusparselt-cu12==0.7.1
+ + nvidia-nccl-cu12==2.27.5
+ + nvidia-nvjitlink-cu12==12.8.93
+ + nvidia-nvshmem-cu12==3.3.20
+ + nvidia-nvtx-cu12==12.8.90
+ + packaging==25.0
+ + pandas==2.3.2
+ + platformdirs==4.4.0
+ + propcache==0.3.2
+ + protobuf==6.32.0
+ + psutil==7.1.0
+ + pyarrow==21.0.0
+ + pydantic==2.11.7
+ + pydantic-core==2.33.2
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + pyyaml==6.0.2
+ + regex==2025.9.1
+ + requests==2.32.5
+ + rustbpe==0.1.0
+ + sentry-sdk==2.35.2
+ + six==1.17.0
+ + smmap==5.0.2
+ + sniffio==1.3.1
+ + starlette==0.48.0
+ + sympy==1.14.0
+ + tiktoken==0.11.0
+ + tokenizers==0.22.0
+ + tomli==2.2.1
+ + torch==2.9.1+cu128
+ + tqdm==4.67.1
+ + triton==3.5.1
+ + typing-extensions==4.15.0
+ + typing-inspection==0.4.1
+ + tzdata==2025.2
+ + urllib3==2.5.0
+ + uvicorn==0.36.0
+ + wandb==0.21.3
+ + xxhash==3.5.0
+ + yarl==1.20.1
+logging to /root/.cache/nanochat_reverse/logs/reverse_d24_ratio8_20260429_042737.log
+nanochat reverse H100 run
+base_dir=/root/.cache/nanochat_reverse
+model_tag=reverse_d24_ratio8
+depth=24 ratio=8 nproc=8 device_batch=16
+data_shards=170 save_every=1000 eval_every=250
+wandb=disabled (WANDB_RUN=dummy); use logs/checkpoints/reverse_sample.sh to inspect the run
+cuda_visible_devices=8 expected_gpus=8 num_nodes=1
+GPU 0: NVIDIA H100 80GB HBM3 (UUID: GPU-d7152f0f-2480-dc85-f3f8-e30166a6257a)
+GPU 1: NVIDIA H100 80GB HBM3 (UUID: GPU-4d42251a-ce4e-7e33-b17e-ecb5c76d0753)
+GPU 2: NVIDIA H100 80GB HBM3 (UUID: GPU-d23a98f1-aaa2-6d81-d065-e6d6c8f4db94)
+GPU 3: NVIDIA H100 80GB HBM3 (UUID: GPU-5872081f-b473-ed59-ce0b-7547f296d37e)
+GPU 4: NVIDIA H100 80GB HBM3 (UUID: GPU-e5582bc3-4644-1865-5d7c-f91843fd932f)
+GPU 5: NVIDIA H100 80GB HBM3 (UUID: GPU-8d13c4a7-12f5-e29d-cf7c-f34c6219a1c9)
+GPU 6: NVIDIA H100 80GB HBM3 (UUID: GPU-d7968686-b8f6-981c-0e30-3031ca009e0e)
+GPU 7: NVIDIA H100 80GB HBM3 (UUID: GPU-49f37abd-a1fe-2b0b-1f73-d1fc103fb403)
+Reset report and wrote header to /root/.cache/nanochat_reverse/report/header.md
+Downloading 9 shards using 4 workers...
+Target directory: /root/.cache/nanochat_reverse/base_data_climbmix
+
+Downloading shard_00000.parquet...
+Downloading shard_00001.parquet...
+Downloading shard_00002.parquet...
+Downloading shard_00003.parquet...
+Successfully downloaded shard_00001.parquet
+Downloading shard_00004.parquet...
+Successfully downloaded shard_00002.parquet
+Downloading shard_00005.parquet...
+Successfully downloaded shard_00003.parquet
+Downloading shard_00006.parquet...
+Successfully downloaded shard_00000.parquet
+Downloading shard_00007.parquet...
+Successfully downloaded shard_00006.parquet
+Downloading shard_06542.parquet...
+Successfully downloaded shard_00007.parquet
+Successfully downloaded shard_00004.parquet
+Successfully downloaded shard_00005.parquet
+Successfully downloaded shard_06542.parquet
+Done! Downloaded: 9/9 shards to /root/.cache/nanochat_reverse/base_data_climbmix
+Downloading 171 shards using 4 workers...
+Target directory: /root/.cache/nanochat_reverse/base_data_climbmix
+
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00000.parquet (already exists)
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00001.parquet (already exists)
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00002.parquet (already exists)
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00003.parquet (already exists)
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00004.parquet (already exists)
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00005.parquet (already exists)
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00006.parquet (already exists)
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_00007.parquet (already exists)
+Downloading shard_00011.parquet...
+Downloading shard_00008.parquet...
+Downloading shard_00022.parquet...
+Downloading shard_00033.parquet...
+max_chars: 2,000,000,000
+doc_cap: 10,000
+vocab_size: 32,768
+2026-04-29 04:27:56,132 - rustbpe - [32m[1mINFO[0m - Processing sequences from iterator (buffer_size: 8192)
+Successfully downloaded shard_00033.parquet
+Successfully downloaded shard_00008.parquet
+Downloading shard_00034.parquet...
+Downloading shard_00009.parquet...
+Successfully downloaded shard_00011.parquet
+Successfully downloaded shard_00022.parquet
+Downloading shard_00012.parquet...
+Downloading shard_00023.parquet...
+Successfully downloaded shard_00034.parquet
+Downloading shard_00035.parquet...
+Successfully downloaded shard_00023.parquet
+Downloading shard_00024.parquet...
+Successfully downloaded shard_00012.parquet
+Downloading shard_00013.parquet...
+Successfully downloaded shard_00009.parquet
+Downloading shard_00010.parquet...
+Successfully downloaded shard_00035.parquet
+Downloading shard_00036.parquet...
+Successfully downloaded shard_00024.parquet
+Downloading shard_00025.parquet...
+Successfully downloaded shard_00013.parquet
+Downloading shard_00014.parquet...
+Successfully downloaded shard_00010.parquet
+Downloading shard_00044.parquet...
+Successfully downloaded shard_00036.parquet
+Downloading shard_00037.parquet...
+Successfully downloaded shard_00025.parquet
+Downloading shard_00026.parquet...
+Successfully downloaded shard_00014.parquet
+Downloading shard_00015.parquet...
+Successfully downloaded shard_00044.parquet
+Downloading shard_00045.parquet...
+Successfully downloaded shard_00026.parquet
+Downloading shard_00027.parquet...
+Successfully downloaded shard_00037.parquet
+Downloading shard_00038.parquet...
+Successfully downloaded shard_00015.parquet
+Downloading shard_00016.parquet...
+Successfully downloaded shard_00045.parquet
+Downloading shard_00046.parquet...
+Successfully downloaded shard_00038.parquet
+Downloading shard_00039.parquet...
+Successfully downloaded shard_00027.parquet
+Downloading shard_00028.parquet...
+Successfully downloaded shard_00016.parquet
+Downloading shard_00017.parquet...
+Successfully downloaded shard_00046.parquet
+Downloading shard_00047.parquet...
+Successfully downloaded shard_00028.parquet
+Downloading shard_00029.parquet...
+Successfully downloaded shard_00017.parquet
+Downloading shard_00018.parquet...
+Successfully downloaded shard_00039.parquet
+Downloading shard_00040.parquet...
+Successfully downloaded shard_00047.parquet
+Downloading shard_00048.parquet...
+Successfully downloaded shard_00029.parquet
+Downloading shard_00030.parquet...
+Successfully downloaded shard_00018.parquet
+Downloading shard_00019.parquet...
+Successfully downloaded shard_00040.parquet
+Downloading shard_00041.parquet...
+Successfully downloaded shard_00048.parquet
+Downloading shard_00049.parquet...
+Successfully downloaded shard_00030.parquet
+Downloading shard_00031.parquet...
+Successfully downloaded shard_00019.parquet
+Downloading shard_00020.parquet...
+Successfully downloaded shard_00041.parquet
+Downloading shard_00042.parquet...
+Successfully downloaded shard_00049.parquet
+Downloading shard_00050.parquet...
+Successfully downloaded shard_00031.parquet
+Downloading shard_00032.parquet...
+Successfully downloaded shard_00020.parquet
+Downloading shard_00021.parquet...
+Successfully downloaded shard_00042.parquet
+Downloading shard_00043.parquet...
+Successfully downloaded shard_00050.parquet
+Downloading shard_00051.parquet...
+Successfully downloaded shard_00032.parquet
+Downloading shard_00055.parquet...
+Successfully downloaded shard_00021.parquet
+Downloading shard_00066.parquet...
+Successfully downloaded shard_00043.parquet
+Downloading shard_00077.parquet...
+Successfully downloaded shard_00051.parquet
+Downloading shard_00052.parquet...
+Successfully downloaded shard_00066.parquet
+Successfully downloaded shard_00055.parquet
+Downloading shard_00067.parquet...
+Downloading shard_00056.parquet...
+Successfully downloaded shard_00077.parquet
+Downloading shard_00078.parquet...
+Successfully downloaded shard_00052.parquet
+Downloading shard_00053.parquet...
+Successfully downloaded shard_00067.parquet
+Downloading shard_00068.parquet...
+Successfully downloaded shard_00056.parquet
+Downloading shard_00057.parquet...
+Successfully downloaded shard_00078.parquet
+Downloading shard_00079.parquet...
+Successfully downloaded shard_00053.parquet
+Downloading shard_00054.parquet...
+Successfully downloaded shard_00068.parquet
+Downloading shard_00069.parquet...
+Successfully downloaded shard_00057.parquet
+Downloading shard_00058.parquet...
+Successfully downloaded shard_00079.parquet
+Downloading shard_00080.parquet...
+Successfully downloaded shard_00054.parquet
+Downloading shard_00088.parquet...
+Successfully downloaded shard_00069.parquet
+Downloading shard_00070.parquet...
+Successfully downloaded shard_00058.parquet
+Downloading shard_00059.parquet...
+Successfully downloaded shard_00080.parquet
+Downloading shard_00081.parquet...
+Successfully downloaded shard_00070.parquet
+Downloading shard_00071.parquet...
+Successfully downloaded shard_00088.parquet
+Downloading shard_00089.parquet...
+Successfully downloaded shard_00059.parquet
+Downloading shard_00060.parquet...
+Successfully downloaded shard_00081.parquet
+Downloading shard_00082.parquet...
+Successfully downloaded shard_00071.parquet
+Downloading shard_00072.parquet...
+Successfully downloaded shard_00089.parquet
+Downloading shard_00090.parquet...
+Successfully downloaded shard_00060.parquet
+Downloading shard_00061.parquet...
+Successfully downloaded shard_00082.parquet
+Downloading shard_00083.parquet...
+Successfully downloaded shard_00072.parquet
+Downloading shard_00073.parquet...
+Successfully downloaded shard_00090.parquet
+Downloading shard_00091.parquet...
+Successfully downloaded shard_00061.parquet
+Downloading shard_00062.parquet...
+Successfully downloaded shard_00083.parquet
+Downloading shard_00084.parquet...
+Successfully downloaded shard_00073.parquet
+Downloading shard_00074.parquet...
+Successfully downloaded shard_00091.parquet
+Downloading shard_00092.parquet...
+Successfully downloaded shard_00084.parquet
+Downloading shard_00085.parquet...
+Successfully downloaded shard_00062.parquet
+Downloading shard_00063.parquet...
+Successfully downloaded shard_00074.parquet
+Downloading shard_00075.parquet...
+Successfully downloaded shard_00092.parquet
+Downloading shard_00093.parquet...
+Successfully downloaded shard_00085.parquet
+Downloading shard_00086.parquet...
+Successfully downloaded shard_00063.parquet
+Downloading shard_00064.parquet...
+Successfully downloaded shard_00075.parquet
+Downloading shard_00076.parquet...
+Successfully downloaded shard_00093.parquet
+Downloading shard_00094.parquet...
+Successfully downloaded shard_00086.parquet
+Downloading shard_00087.parquet...
+Successfully downloaded shard_00064.parquet
+Downloading shard_00065.parquet...
+Successfully downloaded shard_00076.parquet
+Downloading shard_00099.parquet...
+Successfully downloaded shard_00094.parquet
+Downloading shard_00095.parquet...
+Successfully downloaded shard_00087.parquet
+Downloading shard_00110.parquet...
+Successfully downloaded shard_00065.parquet
+Downloading shard_00121.parquet...
+Successfully downloaded shard_00099.parquet
+Downloading shard_00100.parquet...
+Successfully downloaded shard_00095.parquet
+Downloading shard_00096.parquet...
+Successfully downloaded shard_00121.parquet
+Downloading shard_00122.parquet...
+Successfully downloaded shard_00110.parquet
+Downloading shard_00111.parquet...
+Successfully downloaded shard_00100.parquet
+Downloading shard_00101.parquet...
+Successfully downloaded shard_00096.parquet
+Downloading shard_00097.parquet...
+Successfully downloaded shard_00122.parquet
+Downloading shard_00123.parquet...
+Successfully downloaded shard_00111.parquet
+Downloading shard_00112.parquet...
+Successfully downloaded shard_00101.parquet
+Downloading shard_00102.parquet...
+Successfully downloaded shard_00097.parquet
+Downloading shard_00098.parquet...
+Successfully downloaded shard_00123.parquet
+Downloading shard_00124.parquet...
+Successfully downloaded shard_00112.parquet
+Downloading shard_00113.parquet...
+Successfully downloaded shard_00102.parquet
+Downloading shard_00103.parquet...
+Successfully downloaded shard_00098.parquet
+Downloading shard_00132.parquet...
+Successfully downloaded shard_00124.parquet
+Downloading shard_00125.parquet...
+Successfully downloaded shard_00113.parquet
+Downloading shard_00114.parquet...
+Successfully downloaded shard_00103.parquet
+Downloading shard_00104.parquet...
+Successfully downloaded shard_00132.parquet
+Downloading shard_00133.parquet...
+Successfully downloaded shard_00125.parquet
+Downloading shard_00126.parquet...
+Successfully downloaded shard_00114.parquet
+Downloading shard_00115.parquet...
+Successfully downloaded shard_00104.parquet
+Downloading shard_00105.parquet...
+Successfully downloaded shard_00133.parquet
+Downloading shard_00134.parquet...
+Successfully downloaded shard_00126.parquet
+Downloading shard_00127.parquet...
+Successfully downloaded shard_00115.parquet
+Downloading shard_00116.parquet...
+Successfully downloaded shard_00105.parquet
+Downloading shard_00106.parquet...
+Successfully downloaded shard_00134.parquet
+Downloading shard_00135.parquet...
+Successfully downloaded shard_00116.parquet
+Successfully downloaded shard_00127.parquet
+Downloading shard_00117.parquet...
+Downloading shard_00128.parquet...
+Successfully downloaded shard_00106.parquet
+Downloading shard_00107.parquet...
+Successfully downloaded shard_00135.parquet
+Downloading shard_00136.parquet...
+Successfully downloaded shard_00117.parquet
+Downloading shard_00118.parquet...
+Successfully downloaded shard_00128.parquet
+Downloading shard_00129.parquet...
+Successfully downloaded shard_00136.parquet
+Successfully downloaded shard_00107.parquet
+Downloading shard_00137.parquet...
+Downloading shard_00108.parquet...
+Successfully downloaded shard_00118.parquet
+Downloading shard_00119.parquet...
+Successfully downloaded shard_00129.parquet
+Downloading shard_00130.parquet...
+Successfully downloaded shard_00137.parquet
+Downloading shard_00138.parquet...
+Successfully downloaded shard_00108.parquet
+Downloading shard_00109.parquet...
+Successfully downloaded shard_00119.parquet
+Downloading shard_00120.parquet...
+Successfully downloaded shard_00130.parquet
+Downloading shard_00131.parquet...
+Successfully downloaded shard_00109.parquet
+Downloading shard_00143.parquet...
+Successfully downloaded shard_00138.parquet
+Downloading shard_00139.parquet...
+Successfully downloaded shard_00120.parquet
+Downloading shard_00154.parquet...
+Successfully downloaded shard_00131.parquet
+Downloading shard_00165.parquet...
+Successfully downloaded shard_00143.parquet
+Downloading shard_00144.parquet...
+Successfully downloaded shard_00139.parquet
+Downloading shard_00140.parquet...
+Successfully downloaded shard_00154.parquet
+Downloading shard_00155.parquet...
+Successfully downloaded shard_00165.parquet
+Downloading shard_00166.parquet...
+Successfully downloaded shard_00144.parquet
+Downloading shard_00145.parquet...
+Successfully downloaded shard_00140.parquet
+Downloading shard_00141.parquet...
+Successfully downloaded shard_00155.parquet
+Downloading shard_00156.parquet...
+Successfully downloaded shard_00166.parquet
+Downloading shard_00167.parquet...
+Successfully downloaded shard_00145.parquet
+Downloading shard_00146.parquet...
+Successfully downloaded shard_00141.parquet
+Downloading shard_00142.parquet...
+Successfully downloaded shard_00156.parquet
+Downloading shard_00157.parquet...
+Successfully downloaded shard_00167.parquet
+Downloading shard_00168.parquet...
+Successfully downloaded shard_00142.parquet
+Successfully downloaded shard_00146.parquet
+Downloading shard_00147.parquet...
+Successfully downloaded shard_00157.parquet
+Downloading shard_00158.parquet...
+Successfully downloaded shard_00168.parquet
+Downloading shard_00169.parquet...
+Successfully downloaded shard_00147.parquet
+Downloading shard_00148.parquet...
+Successfully downloaded shard_00158.parquet
+Downloading shard_00159.parquet...
+Successfully downloaded shard_00169.parquet
+Skipping /root/.cache/nanochat_reverse/base_data_climbmix/shard_06542.parquet (already exists)
+Successfully downloaded shard_00148.parquet
+Downloading shard_00149.parquet...
+Successfully downloaded shard_00159.parquet
+Downloading shard_00160.parquet...
+Successfully downloaded shard_00149.parquet
+Downloading shard_00150.parquet...
+Successfully downloaded shard_00160.parquet
+Downloading shard_00161.parquet...
+Successfully downloaded shard_00150.parquet
+Downloading shard_00151.parquet...
+Successfully downloaded shard_00161.parquet
+Downloading shard_00162.parquet...
+Successfully downloaded shard_00151.parquet
+Downloading shard_00152.parquet...
+Successfully downloaded shard_00162.parquet
+Downloading shard_00163.parquet...
+Successfully downloaded shard_00152.parquet
+Downloading shard_00153.parquet...
+Successfully downloaded shard_00163.parquet
+Downloading shard_00164.parquet...
+Successfully downloaded shard_00153.parquet
+Successfully downloaded shard_00164.parquet
+Done! Downloaded: 171/171 shards to /root/.cache/nanochat_reverse/base_data_climbmix
+2026-04-29 04:29:00,859 - rustbpe - [32m[1mINFO[0m - Processed 677888 sequences total, 1952346 unique
+2026-04-29 04:29:01,012 - rustbpe - [32m[1mINFO[0m - Starting BPE training: 32503 merges to compute
+2026-04-29 04:29:01,012 - rustbpe - [32m[1mINFO[0m - Computing initial pair counts from 1952346 unique sequences
+2026-04-29 04:29:05,510 - rustbpe - [32m[1mINFO[0m - Building heap with 18999 unique pairs
+2026-04-29 04:29:05,511 - rustbpe - [32m[1mINFO[0m - Starting merge loop
+2026-04-29 04:29:07,700 - rustbpe - [32m[1mINFO[0m - Progress: [1m1%[0m (326/32503 merges) - Last merge: (276, 115) -> 581 (frequency: 547375)
+2026-04-29 04:29:08,044 - rustbpe - [32m[1mINFO[0m - Progress: [1m2%[0m (651/32503 merges) - Last merge: (316, 291) -> 906 (frequency: 223745)
+2026-04-29 04:29:08,256 - rustbpe - [32m[1mINFO[0m - Progress: [1m3%[0m (976/32503 merges) - Last merge: (257, 477) -> 1231 (frequency: 139428)
+2026-04-29 04:29:08,408 - rustbpe - [32m[1mINFO[0m - Progress: [1m4%[0m (1301/32503 merges) - Last merge: (1447, 497) -> 1556 (frequency: 98242)
+2026-04-29 04:29:08,527 - rustbpe - [32m[1mINFO[0m - Progress: [1m5%[0m (1626/32503 merges) - Last merge: (274, 284) -> 1881 (frequency: 75518)
+2026-04-29 04:29:08,628 - rustbpe - [32m[1mINFO[0m - Progress: [1m6%[0m (1951/32503 merges) - Last merge: (1451, 2021) -> 2206 (frequency: 60503)
+2026-04-29 04:29:08,710 - rustbpe - [32m[1mINFO[0m - Progress: [1m7%[0m (2276/32503 merges) - Last merge: (1287, 268) -> 2531 (frequency: 49702)
+2026-04-29 04:29:08,785 - rustbpe - [32m[1mINFO[0m - Progress: [1m8%[0m (2601/32503 merges) - Last merge: (287, 2518) -> 2856 (frequency: 41911)
+2026-04-29 04:29:08,889 - rustbpe - [32m[1mINFO[0m - Progress: [1m9%[0m (2926/32503 merges) - Last merge: (1031, 2449) -> 3181 (frequency: 35604)
+2026-04-29 04:29:08,966 - rustbpe - [32m[1mINFO[0m - Progress: [1m10%[0m (3251/32503 merges) - Last merge: (2375, 344) -> 3506 (frequency: 30493)
+2026-04-29 04:29:09,032 - rustbpe - [32m[1mINFO[0m - Progress: [1m11%[0m (3576/32503 merges) - Last merge: (1231, 1464) -> 3831 (frequency: 26858)
+2026-04-29 04:29:09,087 - rustbpe - [32m[1mINFO[0m - Progress: [1m12%[0m (3901/32503 merges) - Last merge: (404, 261) -> 4156 (frequency: 23616)
+2026-04-29 04:29:09,154 - rustbpe - [32m[1mINFO[0m - Progress: [1m13%[0m (4226/32503 merges) - Last merge: (65, 114) -> 4481 (frequency: 21288)
+2026-04-29 04:29:09,222 - rustbpe - [32m[1mINFO[0m - Progress: [1m14%[0m (4551/32503 merges) - Last merge: (973, 2724) -> 4806 (frequency: 19098)
+2026-04-29 04:29:09,263 - rustbpe - [32m[1mINFO[0m - Progress: [1m15%[0m (4876/32503 merges) - Last merge: (4082, 273) -> 5131 (frequency: 17288)
+2026-04-29 04:29:09,311 - rustbpe - [32m[1mINFO[0m - Progress: [1m16%[0m (5201/32503 merges) - Last merge: (2310, 284) -> 5456 (frequency: 15786)
+2026-04-29 04:29:09,350 - rustbpe - [32m[1mINFO[0m - Progress: [1m17%[0m (5526/32503 merges) - Last merge: (319, 4229) -> 5781 (frequency: 14559)
+2026-04-29 04:29:09,390 - rustbpe - [32m[1mINFO[0m - Progress: [1m18%[0m (5851/32503 merges) - Last merge: (118, 258) -> 6106 (frequency: 13363)
+2026-04-29 04:29:09,436 - rustbpe - [32m[1mINFO[0m - Progress: [1m19%[0m (6176/32503 merges) - Last merge: (493, 451) -> 6431 (frequency: 12442)
+2026-04-29 04:29:09,485 - rustbpe - [32m[1mINFO[0m - Progress: [1m20%[0m (6501/32503 merges) - Last merge: (3748, 280) -> 6756 (frequency: 11481)
+2026-04-29 04:29:09,536 - rustbpe - [32m[1mINFO[0m - Progress: [1m21%[0m (6826/32503 merges) - Last merge: (358, 940) -> 7081 (frequency: 10681)
+2026-04-29 04:29:09,563 - rustbpe - [32m[1mINFO[0m - Progress: [1m22%[0m (7151/32503 merges) - Last merge: (1223, 2974) -> 7406 (frequency: 9974)
+2026-04-29 04:29:09,600 - rustbpe - [32m[1mINFO[0m - Progress: [1m23%[0m (7476/32503 merges) - Last merge: (2711, 390) -> 7731 (frequency: 9384)
+2026-04-29 04:29:09,637 - rustbpe - [32m[1mINFO[0m - Progress: [1m24%[0m (7801/32503 merges) - Last merge: (408, 117) -> 8056 (frequency: 8817)
+2026-04-29 04:29:09,660 - rustbpe - [32m[1mINFO[0m - Progress: [1m25%[0m (8126/32503 merges) - Last merge: (83, 375) -> 8381 (frequency: 8317)
+2026-04-29 04:29:09,701 - rustbpe - [32m[1mINFO[0m - Progress: [1m26%[0m (8451/32503 merges) - Last merge: (4136, 914) -> 8706 (frequency: 7869)
+2026-04-29 04:29:09,743 - rustbpe - [32m[1mINFO[0m - Progress: [1m27%[0m (8776/32503 merges) - Last merge: (282, 597) -> 9031 (frequency: 7410)
+2026-04-29 04:29:09,762 - rustbpe - [32m[1mINFO[0m - Progress: [1m28%[0m (9101/32503 merges) - Last merge: (7179, 299) -> 9356 (frequency: 7024)
+2026-04-29 04:29:09,796 - rustbpe - [32m[1mINFO[0m - Progress: [1m29%[0m (9426/32503 merges) - Last merge: (416, 1146) -> 9681 (frequency: 6654)
+2026-04-29 04:29:09,824 - rustbpe - [32m[1mINFO[0m - Progress: [1m30%[0m (9751/32503 merges) - Last merge: (7196, 336) -> 10006 (frequency: 6358)
+2026-04-29 04:29:09,844 - rustbpe - [32m[1mINFO[0m - Progress: [1m31%[0m (10076/32503 merges) - Last merge: (859, 439) -> 10331 (frequency: 6017)
+2026-04-29 04:29:09,870 - rustbpe - [32m[1mINFO[0m - Progress: [1m32%[0m (10401/32503 merges) - Last merge: (45, 3988) -> 10656 (frequency: 5728)
+2026-04-29 04:29:09,900 - rustbpe - [32m[1mINFO[0m - Progress: [1m33%[0m (10726/32503 merges) - Last merge: (7322, 290) -> 10981 (frequency: 5454)
+2026-04-29 04:29:09,927 - rustbpe - [32m[1mINFO[0m - Progress: [1m34%[0m (11052/32503 merges) - Last merge: (373, 450) -> 11307 (frequency: 5205)
+2026-04-29 04:29:09,971 - rustbpe - [32m[1mINFO[0m - Progress: [1m35%[0m (11377/32503 merges) - Last merge: (98, 551) -> 11632 (frequency: 4975)
+2026-04-29 04:29:10,001 - rustbpe - [32m[1mINFO[0m - Progress: [1m36%[0m (11702/32503 merges) - Last merge: (1889, 1428) -> 11957 (frequency: 4745)
+2026-04-29 04:29:10,022 - rustbpe - [32m[1mINFO[0m - Progress: [1m37%[0m (12027/32503 merges) - Last merge: (10729, 265) -> 12282 (frequency: 4532)
+2026-04-29 04:29:10,049 - rustbpe - [32m[1mINFO[0m - Progress: [1m38%[0m (12352/32503 merges) - Last merge: (6591, 73) -> 12607 (frequency: 4355)
+2026-04-29 04:29:10,068 - rustbpe - [32m[1mINFO[0m - Progress: [1m39%[0m (12677/32503 merges) - Last merge: (780, 98) -> 12932 (frequency: 4162)
+2026-04-29 04:29:10,107 - rustbpe - [32m[1mINFO[0m - Progress: [1m40%[0m (13002/32503 merges) - Last merge: (1782, 499) -> 13257 (frequency: 3990)
+2026-04-29 04:29:10,137 - rustbpe - [32m[1mINFO[0m - Progress: [1m41%[0m (13327/32503 merges) - Last merge: (346, 12090) -> 13582 (frequency: 3831)
+2026-04-29 04:29:10,154 - rustbpe - [32m[1mINFO[0m - Progress: [1m42%[0m (13652/32503 merges) - Last merge: (468, 441) -> 13907 (frequency: 3691)
+2026-04-29 04:29:10,176 - rustbpe - [32m[1mINFO[0m - Progress: [1m43%[0m (13977/32503 merges) - Last merge: (2629, 12137) -> 14232 (frequency: 3559)
+2026-04-29 04:29:10,196 - rustbpe - [32m[1mINFO[0m - Progress: [1m44%[0m (14302/32503 merges) - Last merge: (372, 466) -> 14557 (frequency: 3425)
+2026-04-29 04:29:10,224 - rustbpe - [32m[1mINFO[0m - Progress: [1m45%[0m (14627/32503 merges) - Last merge: (309, 763) -> 14882 (frequency: 3293)
+2026-04-29 04:29:10,254 - rustbpe - [32m[1mINFO[0m - Progress: [1m46%[0m (14952/32503 merges) - Last merge: (83, 85) -> 15207 (frequency: 3172)
+2026-04-29 04:29:10,272 - rustbpe - [32m[1mINFO[0m - Progress: [1m47%[0m (15277/32503 merges) - Last merge: (9845, 726) -> 15532 (frequency: 3063)
+2026-04-29 04:29:10,287 - rustbpe - [32m[1mINFO[0m - Progress: [1m48%[0m (15602/32503 merges) - Last merge: (114, 445) -> 15857 (frequency: 2954)
+2026-04-29 04:29:10,308 - rustbpe - [32m[1mINFO[0m - Progress: [1m49%[0m (15927/32503 merges) - Last merge: (2799, 6222) -> 16182 (frequency: 2850)
+2026-04-29 04:29:10,323 - rustbpe - [32m[1mINFO[0m - Progress: [1m50%[0m (16252/32503 merges) - Last merge: (725, 499) -> 16507 (frequency: 2756)
+2026-04-29 04:29:10,344 - rustbpe - [32m[1mINFO[0m - Progress: [1m51%[0m (16577/32503 merges) - Last merge: (256, 667) -> 16832 (frequency: 2667)
+2026-04-29 04:29:10,369 - rustbpe - [32m[1mINFO[0m - Progress: [1m52%[0m (16902/32503 merges) - Last merge: (15104, 602) -> 17157 (frequency: 2581)
+2026-04-29 04:29:10,388 - rustbpe - [32m[1mINFO[0m - Progress: [1m53%[0m (17227/32503 merges) - Last merge: (7455, 4247) -> 17482 (frequency: 2507)
+2026-04-29 04:29:10,407 - rustbpe - [32m[1mINFO[0m - Progress: [1m54%[0m (17552/32503 merges) - Last merge: (15653, 86) -> 17807 (frequency: 2435)
+2026-04-29 04:29:10,427 - rustbpe - [32m[1mINFO[0m - Progress: [1m55%[0m (17877/32503 merges) - Last merge: (8374, 15411) -> 18132 (frequency: 2370)
+2026-04-29 04:29:10,442 - rustbpe - [32m[1mINFO[0m - Progress: [1m56%[0m (18202/32503 merges) - Last merge: (440, 1257) -> 18457 (frequency: 2300)
+2026-04-29 04:29:10,454 - rustbpe - [32m[1mINFO[0m - Progress: [1m57%[0m (18527/32503 merges) - Last merge: (10001, 367) -> 18782 (frequency: 2232)
+2026-04-29 04:29:10,477 - rustbpe - [32m[1mINFO[0m - Progress: [1m58%[0m (18852/32503 merges) - Last merge: (259, 696) -> 19107 (frequency: 2173)
+2026-04-29 04:29:10,495 - rustbpe - [32m[1mINFO[0m - Progress: [1m59%[0m (19177/32503 merges) - Last merge: (431, 281) -> 19432 (frequency: 2111)
+2026-04-29 04:29:10,507 - rustbpe - [32m[1mINFO[0m - Progress: [1m60%[0m (19502/32503 merges) - Last merge: (431, 3034) -> 19757 (frequency: 2051)
+2026-04-29 04:29:10,523 - rustbpe - [32m[1mINFO[0m - Progress: [1m61%[0m (19827/32503 merges) - Last merge: (430, 3872) -> 20082 (frequency: 1994)
+2026-04-29 04:29:10,546 - rustbpe - [32m[1mINFO[0m - Progress: [1m62%[0m (20152/32503 merges) - Last merge: (355, 17408) -> 20407 (frequency: 1945)
+2026-04-29 04:29:10,561 - rustbpe - [32m[1mINFO[0m - Progress: [1m63%[0m (20477/32503 merges) - Last merge: (272, 4626) -> 20732 (frequency: 1894)
+2026-04-29 04:29:10,580 - rustbpe - [32m[1mINFO[0m - Progress: [1m64%[0m (20802/32503 merges) - Last merge: (12034, 515) -> 21057 (frequency: 1841)
+2026-04-29 04:29:10,593 - rustbpe - [32m[1mINFO[0m - Progress: [1m65%[0m (21127/32503 merges) - Last merge: (73, 69) -> 21382 (frequency: 1793)
+2026-04-29 04:29:10,616 - rustbpe - [32m[1mINFO[0m - Progress: [1m66%[0m (21452/32503 merges) - Last merge: (542, 432) -> 21707 (frequency: 1747)
+2026-04-29 04:29:10,633 - rustbpe - [32m[1mINFO[0m - Progress: [1m67%[0m (21778/32503 merges) - Last merge: (1306, 20583) -> 22033 (frequency: 1704)
+2026-04-29 04:29:10,649 - rustbpe - [32m[1mINFO[0m - Progress: [1m68%[0m (22103/32503 merges) - Last merge: (780, 11506) -> 22358 (frequency: 1662)
+2026-04-29 04:29:10,661 - rustbpe - [32m[1mINFO[0m - Progress: [1m69%[0m (22428/32503 merges) - Last merge: (1486, 590) -> 22683 (frequency: 1619)
+2026-04-29 04:29:10,688 - rustbpe - [32m[1mINFO[0m - Progress: [1m70%[0m (22753/32503 merges) - Last merge: (1771, 2947) -> 23008 (frequency: 1577)
+2026-04-29 04:29:10,699 - rustbpe - [32m[1mINFO[0m - Progress: [1m71%[0m (23078/32503 merges) - Last merge: (7078, 284) -> 23333 (frequency: 1539)
+2026-04-29 04:29:10,713 - rustbpe - [32m[1mINFO[0m - Progress: [1m72%[0m (23403/32503 merges) - Last merge: (411, 792) -> 23658 (frequency: 1503)
+2026-04-29 04:29:10,725 - rustbpe - [32m[1mINFO[0m - Progress: [1m73%[0m (23728/32503 merges) - Last merge: (12140, 497) -> 23983 (frequency: 1471)
+2026-04-29 04:29:10,733 - rustbpe - [32m[1mINFO[0m - Progress: [1m74%[0m (24053/32503 merges) - Last merge: (17894, 2094) -> 24308 (frequency: 1435)
+2026-04-29 04:29:10,744 - rustbpe - [32m[1mINFO[0m - Progress: [1m75%[0m (24378/32503 merges) - Last merge: (15140, 290) -> 24633 (frequency: 1402)
+2026-04-29 04:29:10,758 - rustbpe - [32m[1mINFO[0m - Progress: [1m76%[0m (24703/32503 merges) - Last merge: (8147, 121) -> 24958 (frequency: 1371)
+2026-04-29 04:29:10,776 - rustbpe - [32m[1mINFO[0m - Progress: [1m77%[0m (25028/32503 merges) - Last merge: (2418, 915) -> 25283 (frequency: 1339)
+2026-04-29 04:29:10,787 - rustbpe - [32m[1mINFO[0m - Progress: [1m78%[0m (25353/32503 merges) - Last merge: (15042, 3344) -> 25608 (frequency: 1309)
+2026-04-29 04:29:10,798 - rustbpe - [32m[1mINFO[0m - Progress: [1m79%[0m (25678/32503 merges) - Last merge: (15779, 3089) -> 25933 (frequency: 1282)
+2026-04-29 04:29:10,808 - rustbpe - [32m[1mINFO[0m - Progress: [1m80%[0m (26003/32503 merges) - Last merge: (4153, 378) -> 26258 (frequency: 1256)
+2026-04-29 04:29:10,820 - rustbpe - [32m[1mINFO[0m - Progress: [1m81%[0m (26328/32503 merges) - Last merge: (5908, 284) -> 26583 (frequency: 1228)
+2026-04-29 04:29:10,832 - rustbpe - [32m[1mINFO[0m - Progress: [1m82%[0m (26653/32503 merges) - Last merge: (4582, 18636) -> 26908 (frequency: 1202)
+2026-04-29 04:29:10,844 - rustbpe - [32m[1mINFO[0m - Progress: [1m83%[0m (26978/32503 merges) - Last merge: (864, 4147) -> 27233 (frequency: 1174)
+2026-04-29 04:29:10,858 - rustbpe - [32m[1mINFO[0m - Progress: [1m84%[0m (27303/32503 merges) - Last merge: (365, 4208) -> 27558 (frequency: 1149)
+2026-04-29 04:29:10,869 - rustbpe - [32m[1mINFO[0m - Progress: [1m85%[0m (27628/32503 merges) - Last merge: (5117, 545) -> 27883 (frequency: 1127)
+2026-04-29 04:29:10,886 - rustbpe - [32m[1mINFO[0m - Progress: [1m86%[0m (27953/32503 merges) - Last merge: (18048, 323) -> 28208 (frequency: 1103)
+2026-04-29 04:29:10,897 - rustbpe - [32m[1mINFO[0m - Progress: [1m87%[0m (28278/32503 merges) - Last merge: (4388, 25244) -> 28533 (frequency: 1081)
+2026-04-29 04:29:10,907 - rustbpe - [32m[1mINFO[0m - Progress: [1m88%[0m (28603/32503 merges) - Last merge: (10440, 563) -> 28858 (frequency: 1058)
+2026-04-29 04:29:10,917 - rustbpe - [32m[1mINFO[0m - Progress: [1m89%[0m (28928/32503 merges) - Last merge: (39, 58) -> 29183 (frequency: 1035)
+2026-04-29 04:29:10,927 - rustbpe - [32m[1mINFO[0m - Progress: [1m90%[0m (29253/32503 merges) - Last merge: (23466, 3269) -> 29508 (frequency: 1015)
+2026-04-29 04:29:10,939 - rustbpe - [32m[1mINFO[0m - Progress: [1m91%[0m (29578/32503 merges) - Last merge: (1121, 22012) -> 29833 (frequency: 995)
+2026-04-29 04:29:10,948 - rustbpe - [32m[1mINFO[0m - Progress: [1m92%[0m (29903/32503 merges) - Last merge: (6693, 364) -> 30158 (frequency: 976)
+2026-04-29 04:29:10,957 - rustbpe - [32m[1mINFO[0m - Progress: [1m93%[0m (30228/32503 merges) - Last merge: (4959, 18871) -> 30483 (frequency: 959)
+2026-04-29 04:29:10,970 - rustbpe - [32m[1mINFO[0m - Progress: [1m94%[0m (30553/32503 merges) - Last merge: (431, 67) -> 30808 (frequency: 939)
+2026-04-29 04:29:10,982 - rustbpe - [32m[1mINFO[0m - Progress: [1m95%[0m (30878/32503 merges) - Last merge: (359, 6655) -> 31133 (frequency: 920)
+2026-04-29 04:29:10,991 - rustbpe - [32m[1mINFO[0m - Progress: [1m96%[0m (31203/32503 merges) - Last merge: (5480, 27614) -> 31458 (frequency: 904)
+2026-04-29 04:29:10,998 - rustbpe - [32m[1mINFO[0m - Progress: [1m97%[0m (31528/32503 merges) - Last merge: (1497, 825) -> 31783 (frequency: 886)
+2026-04-29 04:29:11,012 - rustbpe - [32m[1mINFO[0m - Progress: [1m98%[0m (31853/32503 merges) - Last merge: (10729, 1319) -> 32108 (frequency: 872)
+2026-04-29 04:29:11,021 - rustbpe - [32m[1mINFO[0m - Progress: [1m99%[0m (32178/32503 merges) - Last merge: (440, 3832) -> 32433 (frequency: 857)
+2026-04-29 04:29:11,029 - rustbpe - [32m[1mINFO[0m - Progress: [1m100%[0m (32503/32503 merges) - Last merge: (115, 4714) -> 32758 (frequency: 842)
+2026-04-29 04:29:11,029 - rustbpe - [32m[1mINFO[0m - Finished training: 32503 merges completed
+Training time: 75.30s
+Saved tokenizer encoding to /root/.cache/nanochat_reverse/tokenizer/tokenizer.pkl
+Saved token_bytes to /root/.cache/nanochat_reverse/tokenizer/token_bytes.pt
+
+Vocab sizes:
+GPT-2: 50257
+GPT-4: 100277
+Ours: 32768
+
+Comparison with GPT-2:
+===============================================================================================
+Text Type  Bytes    GPT-2           Ours            Relative     Better    
+                    Tokens  Ratio   Tokens  Ratio   Diff %      
+-----------------------------------------------------------------------------------------------
+news       1819     [92m404    [0m [92m4.50   [0m [91m405    [0m [91m4.49   [0m [91m   -0.2%[0m     GPT-2     
+korean     893      [91m745    [0m [91m1.20   [0m [92m741    [0m [92m1.21   [0m [92m   +0.5%[0m     Ours      
+code       1259     [91m576    [0m [91m2.19   [0m [92m396    [0m [92m3.18   [0m [92m  +31.2%[0m     Ours      
+math       1834     [91m936    [0m [91m1.96   [0m [92m911    [0m [92m2.01   [0m [92m   +2.7%[0m     Ours      
+science    1112     [91m260    [0m [91m4.28   [0m [92m247    [0m [92m4.50   [0m [92m   +5.0%[0m     Ours      
+fwe-train  2948778  [91m631304 [0m [91m4.67   [0m [92m622511 [0m [92m4.74   [0m [92m   +1.4%[0m     Ours      
+fwe-val    3024593  [91m653067 [0m [91m4.63   [0m [92m644939 [0m [92m4.69   [0m [92m   +1.2%[0m     Ours      
+
+Comparison with GPT-4:
+===============================================================================================
+Text Type  Bytes    GPT-4           Ours            Relative     Better    
+                    Tokens  Ratio   Tokens  Ratio   Diff %      
+-----------------------------------------------------------------------------------------------
+news       1819     [92m387    [0m [92m4.70   [0m [91m405    [0m [91m4.49   [0m [91m   -4.7%[0m     GPT-4     
+korean     893      [92m364    [0m [92m2.45   [0m [91m741    [0m [91m1.21   [0m [91m -103.6%[0m     GPT-4     
+code       1259     [92m309    [0m [92m4.07   [0m [91m396    [0m [91m3.18   [0m [91m  -28.2%[0m     GPT-4     
+math       1834     [92m832    [0m [92m2.20   [0m [91m911    [0m [91m2.01   [0m [91m   -9.5%[0m     GPT-4     
+science    1112     [91m249    [0m [91m4.47   [0m [92m247    [0m [92m4.50   [0m [92m   +0.8%[0m     Ours      
+fwe-train  2948778  [92m611619 [0m [92m4.82   [0m [91m622511 [0m [91m4.74   [0m [91m   -1.8%[0m     GPT-4     
+fwe-val    3024593  [92m631183 [0m [92m4.79   [0m [91m644939 [0m [91m4.69   [0m [91m   -2.2%[0m     GPT-4     
+Waiting for dataset download to complete...
+
+                                                       █████                █████
+                                                      ░░███                ░░███
+     ████████    ██████   ████████    ██████   ██████  ░███████    ██████  ███████
+    ░░███░░███  ░░░░░███ ░░███░░███  ███░░███ ███░░███ ░███░░███  ░░░░░███░░░███░
+     ░███ ░███   ███████  ░███ ░███ ░███ ░███░███ ░░░  ░███ ░███   ███████  ░███
+     ░███ ░███  ███░░███  ░███ ░███ ░███ ░███░███  ███ ░███ ░███  ███░░███  ░███ ███
+     ████ █████░░████████ ████ █████░░██████ ░░██████  ████ █████░░███████  ░░█████
+    ░░░░ ░░░░░  ░░░░░░░░ ░░░░ ░░░░░  ░░░░░░   ░░░░░░  ░░░░ ░░░░░  ░░░░░░░░   ░░░░░
+    
+Autodetected device type: cuda
+2026-04-29 04:29:47,553 - nanochat.common - [32m[1mINFO[0m - Distributed world size: 8
+GPU: NVIDIA H100 80GB HBM3 | Peak FLOPS (BF16): 9.89e+14
+COMPUTE_DTYPE: torch.bfloat16 (auto-detected: CUDA SM 90 (bf16 supported))
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+WARNING: Flash Attention 3 not available, using PyTorch SDPA fallback
+WARNING: Training will be less efficient without FA3
+WARNING: SDPA has no support for sliding window attention (window_pattern='SSSL'). Your GPU utilization will be terrible.
+WARNING: Recommend using --window-pattern L for full context attention without alternating sliding window patterns.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Vocab size: 32,768
+Model config:
+{
+  "sequence_len": 2048,
+  "vocab_size": 32768,
+  "pad_vocab_size_to": 64,
+  "n_layer": 24,
+  "n_head": 12,
+  "n_kv_head": 12,
+  "n_embd": 1536,
+  "window_pattern": "SSSL"
+}
+✓ FP8 training enabled (tensorwise scaling) - converted 145/158 linear layers, skipped 13 (too small)
+Parameter counts:
+wte                     : 50,331,648
+value_embeds            : 603,979,776
+lm_head                 : 50,331,648
+transformer_matrices    : 679,478,976
+scalars                 : 74
+total                   : 1,384,122,122
+Estimated FLOPs per token: 4.775225e+09
+Auto-computed optimal batch size: 1,048,576 tokens
+Scaling LRs by 1.4142 for batch size 1,048,576 (reference: 524,288)
+Scaling weight decay from 0.280000 to 0.059738 for depth 24
+Scaling the LR for the AdamW parameters ∝1/√(1536/768) = 0.707107
+Reverse training enabled: rows are BOS + reversed token body, so the causal target is the previous token.
+Calculated number of iterations from target data:param ratio: 5,568
+Total number of training tokens: 5,838,471,168
+Tokens : Scaling params ratio: 8.00
+Total training FLOPs estimate: 2.788002e+19
+Tokens / micro-batch / rank: 16 x 2048 = 32,768
+Tokens / micro-batch: 262,144
+Total batch size 1,048,576 => gradient accumulation steps: 4
+Step 00000 | Validation bpb: 3.167509
+step 00000/05568 (0.00%) | loss: 10.398853 | lrm: 0.03 | dt: 140676.08ms | tok/sec: 7,453 | bf16_mfu: 0.45 | epoch: 1 pq: 0 rg: 8 | total time: 0.00m
+step 00001/05568 (0.02%) | loss: 10.373869 | lrm: 0.05 | dt: 1862.39ms | tok/sec: 563,027 | bf16_mfu: 33.98 | epoch: 1 pq: 0 rg: 8 | total time: 0.00m
+step 00002/05568 (0.04%) | loss: 10.329791 | lrm: 0.07 | dt: 1863.69ms | tok/sec: 562,634 | bf16_mfu: 33.96 | epoch: 1 pq: 0 rg: 8 | total time: 0.00m
+step 00003/05568 (0.05%) | loss: 10.263182 | lrm: 0.10 | dt: 1863.14ms | tok/sec: 562,801 | bf16_mfu: 33.97 | epoch: 1 pq: 0 rg: 8 | total time: 0.00m
+step 00004/05568 (0.07%) | loss: 10.163446 | lrm: 0.12 | dt: 1859.43ms | tok/sec: 563,924 | bf16_mfu: 34.04 | epoch: 1 pq: 0 rg: 8 | total time: 0.00m
+step 00005/05568 (0.09%) | loss: 10.024914 | lrm: 0.15 | dt: 1859.43ms | tok/sec: 563,924 | bf16_mfu: 34.04 | epoch: 1 pq: 0 rg: 16 | total time: 0.00m
+step 00006/05568 (0.11%) | loss: 9.811179 | lrm: 0.17 | dt: 1860.62ms | tok/sec: 563,561 | bf16_mfu: 34.01 | epoch: 1 pq: 0 rg: 16 | total time: 0.00m
+step 00007/05568 (0.13%) | loss: 9.587060 | lrm: 0.20 | dt: 1860.88ms | tok/sec: 563,483 | bf16_mfu: 34.01 | epoch: 1 pq: 0 rg: 16 | total time: 0.00m
+step 00008/05568 (0.14%) | loss: 9.252726 | lrm: 0.23 | dt: 1867.85ms | tok/sec: 561,382 | bf16_mfu: 33.88 | epoch: 1 pq: 0 rg: 16 | total time: 0.00m
+step 00009/05568 (0.16%) | loss: 8.924029 | lrm: 0.25 | dt: 1863.84ms | tok/sec: 562,588 | bf16_mfu: 33.95 | epoch: 1 pq: 0 rg: 24 | total time: 0.00m
+step 00010/05568 (0.18%) | loss: 8.621489 | lrm: 0.28 | dt: 1863.21ms | tok/sec: 562,780 | bf16_mfu: 33.97 | epoch: 1 pq: 0 rg: 24 | total time: 0.00m
+step 00011/05568 (0.20%) | loss: 8.382262 | lrm: 0.30 | dt: 1863.70ms | tok/sec: 562,631 | bf16_mfu: 33.96 | epoch: 1 pq: 0 rg: 24 | total time: 0.03m | eta: 172.6m
+step 00012/05568 (0.22%) | loss: 8.143412 | lrm: 0.33 | dt: 1867.94ms | tok/sec: 561,353 | bf16_mfu: 33.88 | epoch: 1 pq: 0 rg: 24 | total time: 0.06m | eta: 172.8m
+step 00013/05568 (0.23%) | loss: 7.927581 | lrm: 0.35 | dt: 1867.80ms | tok/sec: 561,395 | bf16_mfu: 33.88 | epoch: 1 pq: 0 rg: 32 | total time: 0.09m | eta: 172.8m
+step 00014/05568 (0.25%) | loss: 7.732791 | lrm: 0.38 | dt: 1863.43ms | tok/sec: 562,711 | bf16_mfu: 33.96 | epoch: 1 pq: 0 rg: 32 | total time: 0.12m | eta: 172.7m
+step 00015/05568 (0.27%) | loss: 7.548527 | lrm: 0.40 | dt: 1869.13ms | tok/sec: 560,998 | bf16_mfu: 33.86 | epoch: 1 pq: 0 rg: 32 | total time: 0.16m | eta: 172.7m
+step 00016/05568 (0.29%) | loss: 7.381677 | lrm: 0.42 | dt: 1867.22ms | tok/sec: 561,572 | bf16_mfu: 33.89 | epoch: 1 pq: 0 rg: 32 | total time: 0.19m | eta: 172.7m
+step 00017/05568 (0.31%) | loss: 7.240974 | lrm: 0.45 | dt: 1865.74ms | tok/sec: 562,016 | bf16_mfu: 33.92 | epoch: 1 pq: 0 rg: 40 | total time: 0.22m | eta: 172.7m
+step 00018/05568 (0.32%) | loss: 7.096499 | lrm: 0.47 | dt: 1871.22ms | tok/sec: 560,370 | bf16_mfu: 33.82 | epoch: 1 pq: 0 rg: 40 | total time: 0.25m | eta: 172.7m
+step 00019/05568 (0.34%) | loss: 6.980379 | lrm: 0.50 | dt: 1867.11ms | tok/sec: 561,604 | bf16_mfu: 33.90 | epoch: 1 pq: 0 rg: 40 | total time: 0.28m | eta: 172.7m
+step 00020/05568 (0.36%) | loss: 6.878580 | lrm: 0.53 | dt: 1873.22ms | tok/sec: 559,771 | bf16_mfu: 33.78 | epoch: 1 pq: 0 rg: 40 | total time: 0.31m | eta: 172.7m
+step 00021/05568 (0.38%) | loss: 6.775621 | lrm: 0.55 | dt: 1867.12ms | tok/sec: 561,601 | bf16_mfu: 33.90 | epoch: 1 pq: 0 rg: 48 | total time: 0.34m | eta: 172.7m
+step 00022/05568 (0.40%) | loss: 6.682175 | lrm: 0.57 | dt: 1872.94ms | tok/sec: 559,854 | bf16_mfu: 33.79 | epoch: 1 pq: 0 rg: 48 | total time: 0.37m | eta: 172.7m
+step 00023/05568 (0.41%) | loss: 6.589327 | lrm: 0.60 | dt: 1867.23ms | tok/sec: 561,567 | bf16_mfu: 33.89 | epoch: 1 pq: 0 rg: 48 | total time: 0.40m | eta: 172.6m
+step 00024/05568 (0.43%) | loss: 6.505313 | lrm: 0.62 | dt: 1873.63ms | tok/sec: 559,650 | bf16_mfu: 33.78 | epoch: 1 pq: 0 rg: 56 | total time: 0.44m | eta: 172.6m
+step 00025/05568 (0.45%) | loss: 6.425801 | lrm: 0.65 | dt: 1866.96ms | tok/sec: 561,648 | bf16_mfu: 33.90 | epoch: 1 pq: 0 rg: 56 | total time: 0.47m | eta: 172.6m
+step 00026/05568 (0.47%) | loss: 6.352624 | lrm: 0.68 | dt: 1871.63ms | tok/sec: 560,246 | bf16_mfu: 33.81 | epoch: 1 pq: 0 rg: 56 | total time: 0.50m | eta: 172.6m
+step 00027/05568 (0.48%) | loss: 6.287744 | lrm: 0.70 | dt: 1867.06ms | tok/sec: 561,619 | bf16_mfu: 33.90 | epoch: 1 pq: 0 rg: 56 | total time: 0.53m | eta: 172.5m
+step 00028/05568 (0.50%) | loss: 6.247843 | lrm: 0.72 | dt: 1873.23ms | tok/sec: 559,770 | bf16_mfu: 33.78 | epoch: 1 pq: 0 rg: 64 | total time: 0.56m | eta: 172.5m
+step 00029/05568 (0.52%) | loss: 6.203114 | lrm: 0.75 | dt: 1867.78ms | tok/sec: 561,401 | bf16_mfu: 33.88 | epoch: 1 pq: 0 rg: 64 | total time: 0.59m | eta: 172.5m
+step 00030/05568 (0.54%) | loss: 6.141428 | lrm: 0.78 | dt: 1872.10ms | tok/sec: 560,106 | bf16_mfu: 33.80 | epoch: 1 pq: 0 rg: 64 | total time: 0.62m | eta: 172.5m
+step 00031/05568 (0.56%) | loss: 6.102347 | lrm: 0.80 | dt: 1868.32ms | tok/sec: 561,239 | bf16_mfu: 33.87 | epoch: 1 pq: 0 rg: 64 | total time: 0.65m | eta: 172.5m
+step 00032/05568 (0.57%) | loss: 6.058238 | lrm: 0.82 | dt: 1871.29ms | tok/sec: 560,350 | bf16_mfu: 33.82 | epoch: 1 pq: 0 rg: 72 | total time: 0.69m | eta: 172.4m
+step 00033/05568 (0.59%) | loss: 6.017016 | lrm: 0.85 | dt: 1868.71ms | tok/sec: 561,122 | bf16_mfu: 33.87 | epoch: 1 pq: 0 rg: 72 | total time: 0.72m | eta: 172.4m
+step 00034/05568 (0.61%) | loss: 5.974547 | lrm: 0.88 | dt: 1872.91ms | tok/sec: 559,865 | bf16_mfu: 33.79 | epoch: 1 pq: 0 rg: 72 | total time: 0.75m | eta: 172.4m
+step 00035/05568 (0.63%) | loss: 5.935785 | lrm: 0.90 | dt: 1873.04ms | tok/sec: 559,826 | bf16_mfu: 33.79 | epoch: 1 pq: 0 rg: 72 | total time: 0.78m | eta: 172.4m
+step 00036/05568 (0.65%) | loss: 5.912380 | lrm: 0.93 | dt: 1870.95ms | tok/sec: 560,452 | bf16_mfu: 33.83 | epoch: 1 pq: 0 rg: 80 | total time: 0.81m | eta: 172.3m
+step 00037/05568 (0.66%) | loss: 5.883553 | lrm: 0.95 | dt: 1876.52ms | tok/sec: 558,788 | bf16_mfu: 33.73 | epoch: 1 pq: 0 rg: 80 | total time: 0.84m | eta: 172.3m
+step 00038/05568 (0.68%) | loss: 5.863845 | lrm: 0.97 | dt: 1870.81ms | tok/sec: 560,493 | bf16_mfu: 33.83 | epoch: 1 pq: 0 rg: 80 | total time: 0.87m | eta: 172.3m
+step 00039/05568 (0.70%) | loss: 5.839366 | lrm: 1.00 | dt: 1872.05ms | tok/sec: 560,121 | bf16_mfu: 33.81 | epoch: 1 pq: 0 rg: 80 | total time: 0.90m | eta: 172.3m
+step 00040/05568 (0.72%) | loss: 5.818948 | lrm: 1.00 | dt: 1874.71ms | tok/sec: 559,327 | bf16_mfu: 33.76 | epoch: 1 pq: 1 rg: 0 | total time: 0.93m | eta: 172.3m
+step 00041/05568 (0.74%) | loss: 5.787281 | lrm: 1.00 | dt: 1870.26ms | tok/sec: 560,657 | bf16_mfu: 33.84 | epoch: 1 pq: 1 rg: 0 | total time: 0.97m | eta: 172.2m
+step 00042/05568 (0.75%) | loss: 5.758412 | lrm: 1.00 | dt: 1872.55ms | tok/sec: 559,973 | bf16_mfu: 33.80 | epoch: 1 pq: 1 rg: 0 | total time: 1.00m | eta: 172.2m
+step 00043/05568 (0.77%) | loss: 5.734284 | lrm: 1.00 | dt: 1874.04ms | tok/sec: 559,527 | bf16_mfu: 33.77 | epoch: 1 pq: 1 rg: 8 | total time: 1.03m | eta: 172.2m
+step 00044/05568 (0.79%) | loss: 5.709781 | lrm: 1.00 | dt: 1872.00ms | tok/sec: 560,136 | bf16_mfu: 33.81 | epoch: 1 pq: 1 rg: 8 | total time: 1.06m | eta: 172.2m
+step 00045/05568 (0.81%) | loss: 5.694407 | lrm: 1.00 | dt: 1875.82ms | tok/sec: 558,997 | bf16_mfu: 33.74 | epoch: 1 pq: 1 rg: 8 | total time: 1.09m | eta: 172.2m
+step 00046/05568 (0.83%) | loss: 5.662515 | lrm: 1.00 | dt: 1873.03ms | tok/sec: 559,829 | bf16_mfu: 33.79 | epoch: 1 pq: 1 rg: 8 | total time: 1.12m | eta: 172.1m
+step 00047/05568 (0.84%) | loss: 5.629331 | lrm: 1.00 | dt: 1869.80ms | tok/sec: 560,796 | bf16_mfu: 33.85 | epoch: 1 pq: 1 rg: 16 | total time: 1.15m | eta: 172.1m
+step 00048/05568 (0.86%) | loss: 5.600503 | lrm: 1.00 | dt: 1872.70ms | tok/sec: 559,926 | bf16_mfu: 33.79 | epoch: 1 pq: 1 rg: 16 | total time: 1.18m | eta: 172.1m
+step 00049/05568 (0.88%) | loss: 5.575927 | lrm: 1.00 | dt: 1868.68ms | tok/sec: 561,132 | bf16_mfu: 33.87 | epoch: 1 pq: 1 rg: 16 | total time: 1.22m | eta: 172.0m
+step 00050/05568 (0.90%) | loss: 5.547275 | lrm: 1.00 | dt: 1873.69ms | tok/sec: 559,632 | bf16_mfu: 33.78 | epoch: 1 pq: 1 rg: 16 | total time: 1.25m | eta: 172.0m
+step 00051/05568 (0.92%) | loss: 5.520598 | lrm: 1.00 | dt: 1875.15ms | tok/sec: 559,196 | bf16_mfu: 33.75 | epoch: 1 pq: 1 rg: 24 | total time: 1.28m | eta: 172.0m
+step 00052/05568 (0.93%) | loss: 5.492131 | lrm: 1.00 | dt: 1871.04ms | tok/sec: 560,423 | bf16_mfu: 33.82 | epoch: 1 pq: 1 rg: 24 | total time: 1.31m | eta: 172.0m
+step 00053/05568 (0.95%) | loss: 5.470656 | lrm: 1.00 | dt: 1872.64ms | tok/sec: 559,945 | bf16_mfu: 33.80 | epoch: 1 pq: 1 rg: 24 | total time: 1.34m | eta: 171.9m
+step 00054/05568 (0.97%) | loss: 5.464518 | lrm: 1.00 | dt: 1876.87ms | tok/sec: 558,681 | bf16_mfu: 33.72 | epoch: 1 pq: 1 rg: 24 | total time: 1.37m | eta: 171.9m
+step 00055/05568 (0.99%) | loss: 5.443604 | lrm: 1.00 | dt: 1869.43ms | tok/sec: 560,905 | bf16_mfu: 33.85 | epoch: 1 pq: 1 rg: 32 | total time: 1.40m | eta: 171.9m
+step 00056/05568 (1.01%) | loss: 5.415819 | lrm: 1.00 | dt: 1870.85ms | tok/sec: 560,480 | bf16_mfu: 33.83 | epoch: 1 pq: 1 rg: 32 | total time: 1.43m | eta: 171.9m
+step 00057/05568 (1.02%) | loss: 5.391142 | lrm: 1.00 | dt: 1871.35ms | tok/sec: 560,332 | bf16_mfu: 33.82 | epoch: 1 pq: 1 rg: 32 | total time: 1.47m | eta: 171.8m
+step 00058/05568 (1.04%) | loss: 5.365042 | lrm: 1.00 | dt: 1871.52ms | tok/sec: 560,280 | bf16_mfu: 33.82 | epoch: 1 pq: 1 rg: 40 | total time: 1.50m | eta: 171.8m
+step 00059/05568 (1.06%) | loss: 5.340457 | lrm: 1.00 | dt: 1877.85ms | tok/sec: 558,393 | bf16_mfu: 33.70 | epoch: 1 pq: 1 rg: 40 | total time: 1.53m | eta: 171.8m
+step 00060/05568 (1.08%) | loss: 5.311327 | lrm: 1.00 | dt: 1868.25ms | tok/sec: 561,262 | bf16_mfu: 33.87 | epoch: 1 pq: 1 rg: 40 | total time: 1.56m | eta: 171.7m
+step 00061/05568 (1.10%) | loss: 5.300658 | lrm: 1.00 | dt: 1873.64ms | tok/sec: 559,645 | bf16_mfu: 33.78 | epoch: 1 pq: 1 rg: 40 | total time: 1.59m | eta: 171.7m
+step 00062/05568 (1.11%) | loss: 5.271534 | lrm: 1.00 | dt: 1875.17ms | tok/sec: 559,189 | bf16_mfu: 33.75 | epoch: 1 pq: 1 rg: 48 | total time: 1.62m | eta: 171.7m
+step 00063/05568 (1.13%) | loss: 5.239576 | lrm: 1.00 | dt: 1870.21ms | tok/sec: 560,673 | bf16_mfu: 33.84 | epoch: 1 pq: 1 rg: 48 | total time: 1.65m | eta: 171.7m
+step 00064/05568 (1.15%) | loss: 5.200917 | lrm: 1.00 | dt: 1871.02ms | tok/sec: 560,431 | bf16_mfu: 33.82 | epoch: 1 pq: 1 rg: 48 | total time: 1.68m | eta: 171.6m
+step 00065/05568 (1.17%) | loss: 5.177863 | lrm: 1.00 | dt: 1870.36ms | tok/sec: 560,627 | bf16_mfu: 33.84 | epoch: 1 pq: 1 rg: 48 | total time: 1.72m | eta: 171.6m
+step 00066/05568 (1.19%) | loss: 5.160188 | lrm: 1.00 | dt: 1871.42ms | tok/sec: 560,311 | bf16_mfu: 33.82 | epoch: 1 pq: 1 rg: 56 | total time: 1.75m | eta: 171.6m
+step 00067/05568 (1.20%) | loss: 5.148766 | lrm: 1.00 | dt: 1876.84ms | tok/sec: 558,693 | bf16_mfu: 33.72 | epoch: 1 pq: 1 rg: 56 | total time: 1.78m | eta: 171.5m
+step 00068/05568 (1.22%) | loss: 5.139638 | lrm: 1.00 | dt: 1868.49ms | tok/sec: 561,187 | bf16_mfu: 33.87 | epoch: 1 pq: 1 rg: 56 | total time: 1.81m | eta: 171.5m
+step 00069/05568 (1.24%) | loss: 5.120754 | lrm: 1.00 | dt: 1875.32ms | tok/sec: 559,144 | bf16_mfu: 33.75 | epoch: 1 pq: 1 rg: 56 | total time: 1.84m | eta: 171.5m
+step 00070/05568 (1.26%) | loss: 5.120256 | lrm: 1.00 | dt: 1875.44ms | tok/sec: 559,109 | bf16_mfu: 33.74 | epoch: 1 pq: 1 rg: 64 | total time: 1.87m | eta: 171.5m
+step 00071/05568 (1.28%) | loss: 5.088823 | lrm: 1.00 | dt: 1870.40ms | tok/sec: 560,614 | bf16_mfu: 33.84 | epoch: 1 pq: 1 rg: 64 | total time: 1.90m | eta: 171.4m
+step 00072/05568 (1.29%) | loss: 5.059415 | lrm: 1.00 | dt: 1871.27ms | tok/sec: 560,353 | bf16_mfu: 33.82 | epoch: 1 pq: 1 rg: 64 | total time: 1.93m | eta: 171.4m
+step 00073/05568 (1.31%) | loss: 5.031590 | lrm: 1.00 | dt: 1868.61ms | tok/sec: 561,152 | bf16_mfu: 33.87 | epoch: 1 pq: 1 rg: 72 | total time: 1.96m | eta: 171.4m
+step 00074/05568 (1.33%) | loss: 5.012894 | lrm: 1.00 | dt: 1871.15ms | tok/sec: 560,391 | bf16_mfu: 33.82 | epoch: 1 pq: 1 rg: 72 | total time: 2.00m | eta: 171.3m
+step 00075/05568 (1.35%) | loss: 4.997208 | lrm: 1.00 | dt: 1873.61ms | tok/sec: 559,654 | bf16_mfu: 33.78 | epoch: 1 pq: 1 rg: 72 | total time: 2.03m | eta: 171.3m
+step 00076/05568 (1.36%) | loss: 4.974645 | lrm: 1.00 | dt: 1870.30ms | tok/sec: 560,646 | bf16_mfu: 33.84 | epoch: 1 pq: 1 rg: 72 | total time: 2.06m | eta: 171.3m
+step 00077/05568 (1.38%) | loss: 4.947115 | lrm: 1.00 | dt: 1874.74ms | tok/sec: 559,318 | bf16_mfu: 33.76 | epoch: 1 pq: 1 rg: 80 | total time: 2.09m | eta: 171.2m
+step 00078/05568 (1.40%) | loss: 4.917558 | lrm: 1.00 | dt: 1867.88ms | tok/sec: 561,370 | bf16_mfu: 33.88 | epoch: 1 pq: 1 rg: 80 | total time: 2.12m | eta: 171.2m
+step 00079/05568 (1.42%) | loss: 4.890453 | lrm: 1.00 | dt: 1872.14ms | tok/sec: 560,095 | bf16_mfu: 33.80 | epoch: 1 pq: 1 rg: 80 | total time: 2.15m | eta: 171.2m
+step 00080/05568 (1.44%) | loss: 4.871351 | lrm: 1.00 | dt: 1868.26ms | tok/sec: 561,258 | bf16_mfu: 33.87 | epoch: 1 pq: 1 rg: 80 | total time: 2.18m | eta: 171.1m
+step 00081/05568 (1.45%) | loss: 4.848960 | lrm: 1.00 | dt: 1871.01ms | tok/sec: 560,433 | bf16_mfu: 33.82 | epoch: 1 pq: 2 rg: 0 | total time: 2.21m | eta: 171.1m
+step 00082/05568 (1.47%) | loss: 4.816511 | lrm: 1.00 | dt: 1868.44ms | tok/sec: 561,205 | bf16_mfu: 33.87 | epoch: 1 pq: 2 rg: 0 | total time: 2.25m | eta: 171.1m
+step 00083/05568 (1.49%) | loss: 4.799416 | lrm: 1.00 | dt: 1872.84ms | tok/sec: 559,886 | bf16_mfu: 33.79 | epoch: 1 pq: 2 rg: 0 | total time: 2.28m | eta: 171.1m
+step 00084/05568 (1.51%) | loss: 4.788215 | lrm: 1.00 | dt: 1869.45ms | tok/sec: 560,901 | bf16_mfu: 33.85 | epoch: 1 pq: 2 rg: 0 | total time: 2.31m | eta: 171.0m
+step 00085/05568 (1.53%) | loss: 4.772356 | lrm: 1.00 | dt: 1871.33ms | tok/sec: 560,338 | bf16_mfu: 33.82 | epoch: 1 pq: 2 rg: 8 | total time: 2.34m | eta: 171.0m
+step 00086/05568 (1.54%) | loss: 4.759397 | lrm: 1.00 | dt: 1867.05ms | tok/sec: 561,622 | bf16_mfu: 33.90 | epoch: 1 pq: 2 rg: 8 | total time: 2.37m | eta: 171.0m
+step 00087/05568 (1.56%) | loss: 4.736357 | lrm: 1.00 | dt: 1872.87ms | tok/sec: 559,875 | bf16_mfu: 33.79 | epoch: 1 pq: 2 rg: 8 | total time: 2.40m | eta: 170.9m
+step 00088/05568 (1.58%) | loss: 4.715636 | lrm: 1.00 | dt: 1867.89ms | tok/sec: 561,370 | bf16_mfu: 33.88 | epoch: 1 pq: 2 rg: 16 | total time: 2.43m | eta: 170.9m
+step 00089/05568 (1.60%) | loss: 4.699436 | lrm: 1.00 | dt: 1870.78ms | tok/sec: 560,501 | bf16_mfu: 33.83 | epoch: 1 pq: 2 rg: 16 | total time: 2.46m | eta: 170.9m
+step 00090/05568 (1.62%) | loss: 4.687952 | lrm: 1.00 | dt: 1868.25ms | tok/sec: 561,260 | bf16_mfu: 33.87 | epoch: 1 pq: 2 rg: 16 | total time: 2.49m | eta: 170.8m
+step 00091/05568 (1.63%) | loss: 4.675756 | lrm: 1.00 | dt: 1872.31ms | tok/sec: 560,043 | bf16_mfu: 33.80 | epoch: 1 pq: 2 rg: 16 | total time: 2.53m | eta: 170.8m
+step 00092/05568 (1.65%) | loss: 4.661010 | lrm: 1.00 | dt: 1868.23ms | tok/sec: 561,268 | bf16_mfu: 33.87 | epoch: 1 pq: 2 rg: 24 | total time: 2.56m | eta: 170.8m
+step 00093/05568 (1.67%) | loss: 4.647928 | lrm: 1.00 | dt: 1871.54ms | tok/sec: 560,274 | bf16_mfu: 33.81 | epoch: 1 pq: 2 rg: 24 | total time: 2.59m | eta: 170.7m
+step 00094/05568 (1.69%) | loss: 4.636465 | lrm: 1.00 | dt: 1867.96ms | tok/sec: 561,349 | bf16_mfu: 33.88 | epoch: 1 pq: 2 rg: 24 | total time: 2.62m | eta: 170.7m
+step 00095/05568 (1.71%) | loss: 4.608089 | lrm: 1.00 | dt: 1872.40ms | tok/sec: 560,017 | bf16_mfu: 33.80 | epoch: 1 pq: 2 rg: 24 | total time: 2.65m | eta: 170.7m
+step 00096/05568 (1.72%) | loss: 4.600563 | lrm: 1.00 | dt: 1866.87ms | tok/sec: 561,677 | bf16_mfu: 33.90 | epoch: 1 pq: 2 rg: 32 | total time: 2.68m | eta: 170.6m
+step 00097/05568 (1.74%) | loss: 4.585423 | lrm: 1.00 | dt: 1873.25ms | tok/sec: 559,762 | bf16_mfu: 33.78 | epoch: 1 pq: 2 rg: 32 | total time: 2.71m | eta: 170.6m
+step 00098/05568 (1.76%) | loss: 4.580384 | lrm: 1.00 | dt: 1867.21ms | tok/sec: 561,573 | bf16_mfu: 33.89 | epoch: 1 pq: 2 rg: 32 | total time: 2.74m | eta: 170.6m
+step 00099/05568 (1.78%) | loss: 4.564198 | lrm: 1.00 | dt: 1870.50ms | tok/sec: 560,586 | bf16_mfu: 33.83 | epoch: 1 pq: 2 rg: 40 | total time: 2.78m | eta: 170.5m
+step 00100/05568 (1.80%) | loss: 4.527975 | lrm: 1.00 | dt: 1868.53ms | tok/sec: 561,176 | bf16_mfu: 33.87 | epoch: 1 pq: 2 rg: 40 | total time: 2.81m | eta: 170.5m
+step 00101/05568 (1.81%) | loss: 4.499321 | lrm: 1.00 | dt: 1870.19ms | tok/sec: 560,678 | bf16_mfu: 33.84 | epoch: 1 pq: 2 rg: 40 | total time: 2.84m | eta: 170.5m
+step 00102/05568 (1.83%) | loss: 4.494465 | lrm: 1.00 | dt: 1869.04ms | tok/sec: 561,023 | bf16_mfu: 33.86 | epoch: 1 pq: 2 rg: 40 | total time: 2.87m | eta: 170.4m
+step 00103/05568 (1.85%) | loss: 4.482408 | lrm: 1.00 | dt: 1872.33ms | tok/sec: 560,038 | bf16_mfu: 33.80 | epoch: 1 pq: 2 rg: 48 | total time: 2.90m | eta: 170.4m
+step 00104/05568 (1.87%) | loss: 4.469044 | lrm: 1.00 | dt: 1867.17ms | tok/sec: 561,586 | bf16_mfu: 33.89 | epoch: 1 pq: 2 rg: 48 | total time: 2.93m | eta: 170.4m
+step 00105/05568 (1.89%) | loss: 4.467624 | lrm: 1.00 | dt: 1871.16ms | tok/sec: 560,389 | bf16_mfu: 33.82 | epoch: 1 pq: 2 rg: 48 | total time: 2.96m | eta: 170.3m
+step 00106/05568 (1.90%) | loss: 4.441102 | lrm: 1.00 | dt: 1867.89ms | tok/sec: 561,369 | bf16_mfu: 33.88 | epoch: 1 pq: 2 rg: 48 | total time: 2.99m | eta: 170.3m
+step 00107/05568 (1.92%) | loss: 4.419988 | lrm: 1.00 | dt: 1873.53ms | tok/sec: 559,679 | bf16_mfu: 33.78 | epoch: 1 pq: 2 rg: 56 | total time: 3.02m | eta: 170.3m
+step 00108/05568 (1.94%) | loss: 4.385128 | lrm: 1.00 | dt: 1866.68ms | tok/sec: 561,732 | bf16_mfu: 33.90 | epoch: 1 pq: 2 rg: 56 | total time: 3.06m | eta: 170.2m
+step 00109/05568 (1.96%) | loss: 4.380397 | lrm: 1.00 | dt: 1872.57ms | tok/sec: 559,966 | bf16_mfu: 33.80 | epoch: 1 pq: 2 rg: 56 | total time: 3.09m | eta: 170.2m
+step 00110/05568 (1.98%) | loss: 4.374772 | lrm: 1.00 | dt: 1869.58ms | tok/sec: 560,860 | bf16_mfu: 33.85 | epoch: 1 pq: 2 rg: 56 | total time: 3.12m | eta: 170.2m
+step 00111/05568 (1.99%) | loss: 4.365626 | lrm: 1.00 | dt: 1870.87ms | tok/sec: 560,476 | bf16_mfu: 33.83 | epoch: 1 pq: 2 rg: 64 | total time: 3.15m | eta: 170.1m
+step 00112/05568 (2.01%) | loss: 4.353889 | lrm: 1.00 | dt: 1866.98ms | tok/sec: 561,643 | bf16_mfu: 33.90 | epoch: 1 pq: 2 rg: 64 | total time: 3.18m | eta: 170.1m
+step 00113/05568 (2.03%) | loss: 4.334459 | lrm: 1.00 | dt: 1870.98ms | tok/sec: 560,441 | bf16_mfu: 33.82 | epoch: 1 pq: 2 rg: 64 | total time: 3.21m | eta: 170.1m
+step 00114/05568 (2.05%) | loss: 4.327071 | lrm: 1.00 | dt: 1868.51ms | tok/sec: 561,183 | bf16_mfu: 33.87 | epoch: 1 pq: 2 rg: 72 | total time: 3.24m | eta: 170.0m
+step 00115/05568 (2.07%) | loss: 4.301204 | lrm: 1.00 | dt: 1873.80ms | tok/sec: 559,597 | bf16_mfu: 33.77 | epoch: 1 pq: 2 rg: 72 | total time: 3.27m | eta: 170.0m
+step 00116/05568 (2.08%) | loss: 4.282322 | lrm: 1.00 | dt: 1867.94ms | tok/sec: 561,353 | bf16_mfu: 33.88 | epoch: 1 pq: 2 rg: 72 | total time: 3.30m | eta: 170.0m
+step 00117/05568 (2.10%) | loss: 4.278076 | lrm: 1.00 | dt: 1869.70ms | tok/sec: 560,825 | bf16_mfu: 33.85 | epoch: 1 pq: 2 rg: 72 | total time: 3.34m | eta: 170.0m
+step 00118/05568 (2.12%) | loss: 4.273089 | lrm: 1.00 | dt: 1868.96ms | tok/sec: 561,048 | bf16_mfu: 33.86 | epoch: 1 pq: 2 rg: 80 | total time: 3.37m | eta: 169.9m
+step 00119/05568 (2.14%) | loss: 4.263470 | lrm: 1.00 | dt: 1872.57ms | tok/sec: 559,967 | bf16_mfu: 33.80 | epoch: 1 pq: 2 rg: 80 | total time: 3.40m | eta: 169.9m
+step 00120/05568 (2.16%) | loss: 4.242403 | lrm: 1.00 | dt: 1866.66ms | tok/sec: 561,739 | bf16_mfu: 33.90 | epoch: 1 pq: 2 rg: 80 | total time: 3.43m | eta: 169.9m
+step 00121/05568 (2.17%) | loss: 4.227676 | lrm: 1.00 | dt: 1871.65ms | tok/sec: 560,241 | bf16_mfu: 33.81 | epoch: 1 pq: 2 rg: 80 | total time: 3.46m | eta: 169.8m
+step 00122/05568 (2.19%) | loss: 4.223359 | lrm: 1.00 | dt: 1868.94ms | tok/sec: 561,054 | bf16_mfu: 33.86 | epoch: 1 pq: 3 rg: 0 | total time: 3.49m | eta: 169.8m
+step 00123/05568 (2.21%) | loss: 4.213102 | lrm: 1.00 | dt: 1873.31ms | tok/sec: 559,745 | bf16_mfu: 33.78 | epoch: 1 pq: 3 rg: 0 | total time: 3.52m | eta: 169.8m
+step 00124/05568 (2.23%) | loss: 4.207707 | lrm: 1.00 | dt: 1866.99ms | tok/sec: 561,639 | bf16_mfu: 33.90 | epoch: 1 pq: 3 rg: 0 | total time: 3.55m | eta: 169.7m
+step 00125/05568 (2.24%) | loss: 4.208028 | lrm: 1.00 | dt: 1872.31ms | tok/sec: 560,042 | bf16_mfu: 33.80 | epoch: 1 pq: 3 rg: 0 | total time: 3.59m | eta: 169.7m
+step 00126/05568 (2.26%) | loss: 4.195147 | lrm: 1.00 | dt: 1868.64ms | tok/sec: 561,142 | bf16_mfu: 33.87 | epoch: 1 pq: 3 rg: 8 | total time: 3.62m | eta: 169.7m
+step 00127/05568 (2.28%) | loss: 4.191291 | lrm: 1.00 | dt: 1870.58ms | tok/sec: 560,562 | bf16_mfu: 33.83 | epoch: 1 pq: 3 rg: 8 | total time: 3.65m | eta: 169.6m
+step 00128/05568 (2.30%) | loss: 4.167223 | lrm: 1.00 | dt: 1868.05ms | tok/sec: 561,321 | bf16_mfu: 33.88 | epoch: 1 pq: 3 rg: 8 | total time: 3.68m | eta: 169.6m
+step 00129/05568 (2.32%) | loss: 4.157820 | lrm: 1.00 | dt: 1872.43ms | tok/sec: 560,007 | bf16_mfu: 33.80 | epoch: 1 pq: 3 rg: 8 | total time: 3.71m | eta: 169.6m
+step 00130/05568 (2.33%) | loss: 4.136378 | lrm: 1.00 | dt: 1866.84ms | tok/sec: 561,684 | bf16_mfu: 33.90 | epoch: 1 pq: 3 rg: 16 | total time: 3.74m | eta: 169.5m
+step 00131/05568 (2.35%) | loss: 4.109607 | lrm: 1.00 | dt: 1870.99ms | tok/sec: 560,440 | bf16_mfu: 33.82 | epoch: 1 pq: 3 rg: 16 | total time: 3.77m | eta: 169.5m
+step 00132/05568 (2.37%) | loss: 4.097657 | lrm: 1.00 | dt: 1866.61ms | tok/sec: 561,755 | bf16_mfu: 33.90 | epoch: 1 pq: 3 rg: 16 | total time: 3.80m | eta: 169.5m
+step 00133/05568 (2.39%) | loss: 4.074441 | lrm: 1.00 | dt: 1870.01ms | tok/sec: 560,733 | bf16_mfu: 33.84 | epoch: 1 pq: 3 rg: 16 | total time: 3.83m | eta: 169.4m
+step 00134/05568 (2.41%) | loss: 4.059453 | lrm: 1.00 | dt: 1869.69ms | tok/sec: 560,827 | bf16_mfu: 33.85 | epoch: 1 pq: 3 rg: 24 | total time: 3.87m | eta: 169.4m
+step 00135/05568 (2.42%) | loss: 4.034572 | lrm: 1.00 | dt: 1873.62ms | tok/sec: 559,651 | bf16_mfu: 33.78 | epoch: 1 pq: 3 rg: 24 | total time: 3.90m | eta: 169.4m
+step 00136/05568 (2.44%) | loss: 4.030013 | lrm: 1.00 | dt: 1866.72ms | tok/sec: 561,721 | bf16_mfu: 33.90 | epoch: 1 pq: 3 rg: 24 | total time: 3.93m | eta: 169.3m
+step 00137/05568 (2.46%) | loss: 3.996030 | lrm: 1.00 | dt: 1871.59ms | tok/sec: 560,259 | bf16_mfu: 33.81 | epoch: 1 pq: 3 rg: 24 | total time: 3.96m | eta: 169.3m
+step 00138/05568 (2.48%) | loss: 3.973351 | lrm: 1.00 | dt: 1868.92ms | tok/sec: 561,061 | bf16_mfu: 33.86 | epoch: 1 pq: 3 rg: 32 | total time: 3.99m | eta: 169.3m
+step 00139/05568 (2.50%) | loss: 3.974011 | lrm: 1.00 | dt: 1873.20ms | tok/sec: 559,779 | bf16_mfu: 33.79 | epoch: 1 pq: 3 rg: 32 | total time: 4.02m | eta: 169.3m
+step 00140/05568 (2.51%) | loss: 3.951898 | lrm: 1.00 | dt: 1868.74ms | tok/sec: 561,114 | bf16_mfu: 33.87 | epoch: 1 pq: 3 rg: 32 | total time: 4.05m | eta: 169.2m
+step 00141/05568 (2.53%) | loss: 3.934769 | lrm: 1.00 | dt: 1872.07ms | tok/sec: 560,116 | bf16_mfu: 33.81 | epoch: 1 pq: 3 rg: 32 | total time: 4.08m | eta: 169.2m
+step 00142/05568 (2.55%) | loss: 3.913623 | lrm: 1.00 | dt: 1866.46ms | tok/sec: 561,800 | bf16_mfu: 33.91 | epoch: 1 pq: 3 rg: 32 | total time: 4.12m | eta: 169.2m
+step 00143/05568 (2.57%) | loss: 3.905939 | lrm: 1.00 | dt: 1873.00ms | tok/sec: 559,837 | bf16_mfu: 33.79 | epoch: 1 pq: 3 rg: 40 | total time: 4.15m | eta: 169.1m
+step 00144/05568 (2.59%) | loss: 3.904235 | lrm: 1.00 | dt: 1866.93ms | tok/sec: 561,657 | bf16_mfu: 33.90 | epoch: 1 pq: 3 rg: 40 | total time: 4.18m | eta: 169.1m
+step 00145/05568 (2.60%) | loss: 3.905581 | lrm: 1.00 | dt: 1872.11ms | tok/sec: 560,104 | bf16_mfu: 33.80 | epoch: 1 pq: 3 rg: 40 | total time: 4.21m | eta: 169.1m
+step 00146/05568 (2.62%) | loss: 3.895461 | lrm: 1.00 | dt: 1866.91ms | tok/sec: 561,664 | bf16_mfu: 33.90 | epoch: 1 pq: 3 rg: 40 | total time: 4.24m | eta: 169.0m
+step 00147/05568 (2.64%) | loss: 3.870191 | lrm: 1.00 | dt: 1873.38ms | tok/sec: 559,723 | bf16_mfu: 33.78 | epoch: 1 pq: 3 rg: 48 | total time: 4.27m | eta: 169.0m
+step 00148/05568 (2.66%) | loss: 3.870192 | lrm: 1.00 | dt: 1868.10ms | tok/sec: 561,304 | bf16_mfu: 33.88 | epoch: 1 pq: 3 rg: 48 | total time: 4.30m | eta: 169.0m
+step 00149/05568 (2.68%) | loss: 3.859578 | lrm: 1.00 | dt: 1871.63ms | tok/sec: 560,248 | bf16_mfu: 33.81 | epoch: 1 pq: 3 rg: 48 | total time: 4.33m | eta: 168.9m
+step 00150/05568 (2.69%) | loss: 3.849012 | lrm: 1.00 | dt: 1867.84ms | tok/sec: 561,383 | bf16_mfu: 33.88 | epoch: 1 pq: 3 rg: 48 | total time: 4.36m | eta: 168.9m
+step 00151/05568 (2.71%) | loss: 3.844471 | lrm: 1.00 | dt: 1870.71ms | tok/sec: 560,521 | bf16_mfu: 33.83 | epoch: 1 pq: 3 rg: 56 | total time: 4.40m | eta: 168.9m
+step 00152/05568 (2.73%) | loss: 3.838126 | lrm: 1.00 | dt: 1867.73ms | tok/sec: 561,417 | bf16_mfu: 33.88 | epoch: 1 pq: 3 rg: 56 | total time: 4.43m | eta: 168.8m
+step 00153/05568 (2.75%) | loss: 3.821177 | lrm: 1.00 | dt: 1869.64ms | tok/sec: 560,842 | bf16_mfu: 33.85 | epoch: 1 pq: 3 rg: 56 | total time: 4.46m | eta: 168.8m
+step 00154/05568 (2.77%) | loss: 3.829533 | lrm: 1.00 | dt: 1866.48ms | tok/sec: 561,792 | bf16_mfu: 33.91 | epoch: 1 pq: 3 rg: 56 | total time: 4.49m | eta: 168.8m
+step 00155/05568 (2.78%) | loss: 3.831806 | lrm: 1.00 | dt: 1874.53ms | tok/sec: 559,379 | bf16_mfu: 33.76 | epoch: 1 pq: 3 rg: 64 | total time: 4.52m | eta: 168.8m
+step 00156/05568 (2.80%) | loss: 3.836568 | lrm: 1.00 | dt: 1866.37ms | tok/sec: 561,825 | bf16_mfu: 33.91 | epoch: 1 pq: 3 rg: 64 | total time: 4.55m | eta: 168.7m
+step 00157/05568 (2.82%) | loss: 3.813586 | lrm: 1.00 | dt: 1868.76ms | tok/sec: 561,109 | bf16_mfu: 33.87 | epoch: 1 pq: 3 rg: 64 | total time: 4.58m | eta: 168.7m
+step 00158/05568 (2.84%) | loss: 3.795585 | lrm: 1.00 | dt: 1870.39ms | tok/sec: 560,619 | bf16_mfu: 33.84 | epoch: 1 pq: 3 rg: 64 | total time: 4.61m | eta: 168.7m
+step 00159/05568 (2.86%) | loss: 3.784300 | lrm: 1.00 | dt: 1867.43ms | tok/sec: 561,507 | bf16_mfu: 33.89 | epoch: 1 pq: 3 rg: 72 | total time: 4.64m | eta: 168.6m
+step 00160/05568 (2.87%) | loss: 3.771253 | lrm: 1.00 | dt: 1870.50ms | tok/sec: 560,586 | bf16_mfu: 33.83 | epoch: 1 pq: 3 rg: 72 | total time: 4.68m | eta: 168.6m
+step 00161/05568 (2.89%) | loss: 3.750949 | lrm: 1.00 | dt: 1868.06ms | tok/sec: 561,319 | bf16_mfu: 33.88 | epoch: 1 pq: 3 rg: 72 | total time: 4.71m | eta: 168.6m
+step 00162/05568 (2.91%) | loss: 3.736713 | lrm: 1.00 | dt: 1871.03ms | tok/sec: 560,426 | bf16_mfu: 33.82 | epoch: 1 pq: 3 rg: 72 | total time: 4.74m | eta: 168.5m
+step 00163/05568 (2.93%) | loss: 3.718238 | lrm: 1.00 | dt: 1867.82ms | tok/sec: 561,389 | bf16_mfu: 33.88 | epoch: 1 pq: 3 rg: 80 | total time: 4.77m | eta: 168.5m
+step 00164/05568 (2.95%) | loss: 3.727440 | lrm: 1.00 | dt: 1869.97ms | tok/sec: 560,743 | bf16_mfu: 33.84 | epoch: 1 pq: 3 rg: 80 | total time: 4.80m | eta: 168.5m
+step 00165/05568 (2.96%) | loss: 3.727327 | lrm: 1.00 | dt: 1867.17ms | tok/sec: 561,586 | bf16_mfu: 33.89 | epoch: 1 pq: 3 rg: 80 | total time: 4.83m | eta: 168.4m
+step 00166/05568 (2.98%) | loss: 3.733191 | lrm: 1.00 | dt: 1871.22ms | tok/sec: 560,371 | bf16_mfu: 33.82 | epoch: 1 pq: 3 rg: 80 | total time: 4.86m | eta: 168.4m
+step 00167/05568 (3.00%) | loss: 3.728970 | lrm: 1.00 | dt: 1867.33ms | tok/sec: 561,536 | bf16_mfu: 33.89 | epoch: 1 pq: 4 rg: 0 | total time: 4.89m | eta: 168.4m
+step 00168/05568 (3.02%) | loss: 3.710458 | lrm: 1.00 | dt: 1865.37ms | tok/sec: 562,127 | bf16_mfu: 33.93 | epoch: 1 pq: 4 rg: 0 | total time: 4.93m | eta: 168.3m
+step 00169/05568 (3.04%) | loss: 3.716023 | lrm: 1.00 | dt: 1870.23ms | tok/sec: 560,665 | bf16_mfu: 33.84 | epoch: 1 pq: 4 rg: 0 | total time: 4.96m | eta: 168.3m
+step 00170/05568 (3.05%) | loss: 3.724239 | lrm: 1.00 | dt: 1867.26ms | tok/sec: 561,558 | bf16_mfu: 33.89 | epoch: 1 pq: 4 rg: 0 | total time: 4.99m | eta: 168.3m
+step 00171/05568 (3.07%) | loss: 3.731384 | lrm: 1.00 | dt: 1870.92ms | tok/sec: 560,459 | bf16_mfu: 33.83 | epoch: 1 pq: 4 rg: 0 | total time: 5.02m | eta: 168.2m
+step 00172/05568 (3.09%) | loss: 3.711540 | lrm: 1.00 | dt: 1866.23ms | tok/sec: 561,869 | bf16_mfu: 33.91 | epoch: 1 pq: 4 rg: 8 | total time: 5.05m | eta: 168.2m
+step 00173/05568 (3.11%) | loss: 3.709647 | lrm: 1.00 | dt: 1869.00ms | tok/sec: 561,035 | bf16_mfu: 33.86 | epoch: 1 pq: 4 rg: 8 | total time: 5.08m | eta: 168.2m
+step 00174/05568 (3.12%) | loss: 3.698187 | lrm: 1.00 | dt: 1869.19ms | tok/sec: 560,979 | bf16_mfu: 33.86 | epoch: 1 pq: 4 rg: 8 | total time: 5.11m | eta: 168.1m
+step 00175/05568 (3.14%) | loss: 3.680845 | lrm: 1.00 | dt: 1865.45ms | tok/sec: 562,102 | bf16_mfu: 33.93 | epoch: 1 pq: 4 rg: 8 | total time: 5.14m | eta: 168.1m
+step 00176/05568 (3.16%) | loss: 3.667738 | lrm: 1.00 | dt: 1870.47ms | tok/sec: 560,593 | bf16_mfu: 33.83 | epoch: 1 pq: 4 rg: 16 | total time: 5.17m | eta: 168.1m
+step 00177/05568 (3.18%) | loss: 3.652306 | lrm: 1.00 | dt: 1866.65ms | tok/sec: 561,741 | bf16_mfu: 33.90 | epoch: 1 pq: 4 rg: 16 | total time: 5.21m | eta: 168.0m
+step 00178/05568 (3.20%) | loss: 3.637199 | lrm: 1.00 | dt: 1867.72ms | tok/sec: 561,419 | bf16_mfu: 33.88 | epoch: 1 pq: 4 rg: 16 | total time: 5.24m | eta: 168.0m
+step 00179/05568 (3.21%) | loss: 3.617063 | lrm: 1.00 | dt: 1868.28ms | tok/sec: 561,251 | bf16_mfu: 33.87 | epoch: 1 pq: 4 rg: 16 | total time: 5.27m | eta: 168.0m
+step 00180/05568 (3.23%) | loss: 3.618110 | lrm: 1.00 | dt: 1865.15ms | tok/sec: 562,194 | bf16_mfu: 33.93 | epoch: 1 pq: 4 rg: 24 | total time: 5.30m | eta: 167.9m
+step 00181/05568 (3.25%) | loss: 3.589660 | lrm: 1.00 | dt: 1868.92ms | tok/sec: 561,060 | bf16_mfu: 33.86 | epoch: 1 pq: 4 rg: 24 | total time: 5.33m | eta: 167.9m
+step 00182/05568 (3.27%) | loss: 3.589569 | lrm: 1.00 | dt: 1868.24ms | tok/sec: 561,263 | bf16_mfu: 33.87 | epoch: 1 pq: 4 rg: 24 | total time: 5.36m | eta: 167.9m
+step 00183/05568 (3.29%) | loss: 3.584888 | lrm: 1.00 | dt: 1868.92ms | tok/sec: 561,060 | bf16_mfu: 33.86 | epoch: 1 pq: 4 rg: 24 | total time: 5.39m | eta: 167.8m
+step 00184/05568 (3.30%) | loss: 3.565044 | lrm: 1.00 | dt: 1869.05ms | tok/sec: 561,020 | bf16_mfu: 33.86 | epoch: 1 pq: 4 rg: 32 | total time: 5.42m | eta: 167.8m
+step 00185/05568 (3.32%) | loss: 3.566777 | lrm: 1.00 | dt: 1864.32ms | tok/sec: 562,445 | bf16_mfu: 33.95 | epoch: 1 pq: 4 rg: 32 | total time: 5.45m | eta: 167.8m
+step 00186/05568 (3.34%) | loss: 3.555993 | lrm: 1.00 | dt: 1871.18ms | tok/sec: 560,381 | bf16_mfu: 33.82 | epoch: 1 pq: 4 rg: 32 | total time: 5.49m | eta: 167.7m
+step 00187/05568 (3.36%) | loss: 3.549286 | lrm: 1.00 | dt: 1867.38ms | tok/sec: 561,522 | bf16_mfu: 33.89 | epoch: 1 pq: 4 rg: 32 | total time: 5.52m | eta: 167.7m
+step 00188/05568 (3.38%) | loss: 3.554608 | lrm: 1.00 | dt: 1868.61ms | tok/sec: 561,154 | bf16_mfu: 33.87 | epoch: 1 pq: 4 rg: 32 | total time: 5.55m | eta: 167.7m
+step 00189/05568 (3.39%) | loss: 3.567204 | lrm: 1.00 | dt: 1865.90ms | tok/sec: 561,967 | bf16_mfu: 33.92 | epoch: 1 pq: 4 rg: 40 | total time: 5.58m | eta: 167.7m
+step 00190/05568 (3.41%) | loss: 3.585988 | lrm: 1.00 | dt: 1865.80ms | tok/sec: 561,996 | bf16_mfu: 33.92 | epoch: 1 pq: 4 rg: 40 | total time: 5.61m | eta: 167.6m
+step 00191/05568 (3.43%) | loss: 3.587293 | lrm: 1.00 | dt: 1869.42ms | tok/sec: 560,908 | bf16_mfu: 33.85 | epoch: 1 pq: 4 rg: 40 | total time: 5.64m | eta: 167.6m
+step 00192/05568 (3.45%) | loss: 3.584042 | lrm: 1.00 | dt: 1866.14ms | tok/sec: 561,896 | bf16_mfu: 33.91 | epoch: 1 pq: 4 rg: 40 | total time: 5.67m | eta: 167.6m
+step 00193/05568 (3.47%) | loss: 3.567403 | lrm: 1.00 | dt: 1864.72ms | tok/sec: 562,322 | bf16_mfu: 33.94 | epoch: 1 pq: 4 rg: 48 | total time: 5.70m | eta: 167.5m
+step 00194/05568 (3.48%) | loss: 3.564625 | lrm: 1.00 | dt: 1868.77ms | tok/sec: 561,106 | bf16_mfu: 33.87 | epoch: 1 pq: 4 rg: 48 | total time: 5.73m | eta: 167.5m
+step 00195/05568 (3.50%) | loss: 3.563047 | lrm: 1.00 | dt: 1866.99ms | tok/sec: 561,638 | bf16_mfu: 33.90 | epoch: 1 pq: 4 rg: 48 | total time: 5.77m | eta: 167.5m
+step 00196/05568 (3.52%) | loss: 3.550961 | lrm: 1.00 | dt: 1864.82ms | tok/sec: 562,292 | bf16_mfu: 33.94 | epoch: 1 pq: 4 rg: 48 | total time: 5.80m | eta: 167.4m
+step 00197/05568 (3.54%) | loss: 3.548080 | lrm: 1.00 | dt: 1870.33ms | tok/sec: 560,635 | bf16_mfu: 33.84 | epoch: 1 pq: 4 rg: 56 | total time: 5.83m | eta: 167.4m
+step 00198/05568 (3.56%) | loss: 3.537879 | lrm: 1.00 | dt: 1865.64ms | tok/sec: 562,046 | bf16_mfu: 33.92 | epoch: 1 pq: 4 rg: 56 | total time: 5.86m | eta: 167.4m
+step 00199/05568 (3.57%) | loss: 3.545486 | lrm: 1.00 | dt: 1865.41ms | tok/sec: 562,115 | bf16_mfu: 33.93 | epoch: 1 pq: 4 rg: 56 | total time: 5.89m | eta: 167.3m
+step 00200/05568 (3.59%) | loss: 3.517310 | lrm: 1.00 | dt: 1869.39ms | tok/sec: 560,918 | bf16_mfu: 33.85 | epoch: 1 pq: 4 rg: 56 | total time: 5.92m | eta: 167.3m

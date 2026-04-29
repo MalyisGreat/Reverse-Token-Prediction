@@ -16,6 +16,12 @@ The model is still a normal causal Transformer. The training rows are reversed a
 
 ## RunPod Template
 
+Persistent storage note:
+
+- reverse launch scripts now default `NANOCHAT_BASE_DIR` to `/workspace/nanochat_reverse` when `/workspace` exists and is writable
+- that keeps checkpoints, logs, and tokenizer artifacts on the persistent volume on hosted GPU pods such as RunPod
+- if you override `NANOCHAT_BASE_DIR`, make sure it still points at persistent storage; do not leave critical checkpoints under ephemeral `/root/.cache`
+
 Use one single-node `8x H100 SXM` pod if RunPod has it available. Do not use a multi-node Instant Cluster for this launcher; `runs/reverse_speedrun_8xh100.sh` uses single-node `torchrun --standalone --nproc_per_node=8` and will now fail fast if RunPod exposes `NUM_NODES` greater than `1`.
 
 Template choice:
@@ -70,6 +76,7 @@ Defaults are intentionally close to nanochat's 8xH100 speedrun:
 - `WINDOW_PATTERN=L` by default, because RunPod PyTorch images may not have Flash Attention 3 and nanochat's sliding-window `SSSL` pattern is very slow under SDPA fallback
 - local ClimbMix parquet shards, not live HF streaming during training
 - checkpoints under `$NANOCHAT_BASE_DIR/base_checkpoints/$MODEL_TAG`
+- on hosted Linux GPU boxes with `/workspace`, the repo now defaults this to `/workspace/nanochat_reverse/base_checkpoints/$MODEL_TAG`
 
 Loss visibility:
 
@@ -168,6 +175,7 @@ Checklist for a rental pod:
 
 - choose H100 SXM if possible, not PCIe, for best bandwidth
 - attach enough persistent disk for ClimbMix shards, checkpoints, logs, and tokenizer artifacts
+- verify `echo $NANOCHAT_BASE_DIR` points at persistent storage before launching the full run
 - make sure `nvidia-smi` shows all 8 GPUs before launch
 - if startup says `Flash Attention 3 not available`, use `WINDOW_PATTERN=L`; if FA3 is available, you can test `WINDOW_PATTERN=SSSL`
 - launch from `nanochat_reverse/`, not repo root

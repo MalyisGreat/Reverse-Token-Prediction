@@ -3,7 +3,11 @@ set -euo pipefail
 
 # Minimal loss/progress view for W&B-free runs.
 
-export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$HOME/.cache/nanochat_reverse}"
+DEFAULT_BASE_DIR="$HOME/.cache/nanochat_reverse"
+if [ -d /workspace ] && [ -w /workspace ]; then
+  DEFAULT_BASE_DIR="/workspace/nanochat_reverse"
+fi
+export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$DEFAULT_BASE_DIR}"
 MODEL_TAG="${MODEL_TAG:-reverse_d24_ratio8}"
 LOG_DIR="${LOG_DIR:-$NANOCHAT_BASE_DIR/logs}"
 FOLLOW="${FOLLOW:-1}"

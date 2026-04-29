@@ -1,10 +1,59 @@
 # Reverse Token Prediction
 
+<p align="center">
+  <img src="docs/results/assets/github_hero.png" alt="Reverse Token Prediction result summary" width="100%" />
+</p>
+
+<p align="center">
+  <a href="docs/results/reverse_runpod_8xh100_report.md"><img alt="full report" src="https://img.shields.io/badge/report-full%20writeup-0f172a?style=for-the-badge&logo=readthedocs&logoColor=white"></a>
+  <a href="docs/results/Reverse_Token_Prediction_Results_2026-04-29.pptx"><img alt="deck" src="https://img.shields.io/badge/deck-pptx-1d4ed8?style=for-the-badge&logo=microsoftpowerpoint&logoColor=white"></a>
+  <a href="docs/results/reverse_runpod_8xh100_apr2026.json"><img alt="structured results" src="https://img.shields.io/badge/data-json-0f766e?style=for-the-badge&logo=json&logoColor=white"></a>
+</p>
+
 Reverse Token Prediction trains a causal language model on text in the opposite direction. Instead of learning `prefix -> next token`, the core experiment learns `suffix -> previous token`. At inference time, you provide an ending anchor and the model generates the text that plausibly leads into that ending.
 
-This repo packages the working reverse-only MIRROR experiment with H100-oriented launch scripts for a roughly 100M parameter model.
+This repo contains both:
 
-It also vendors `karpathy/nanochat` under `nanochat_reverse/` for the higher-throughput 8xH100 path. The old single-file trainer remains the local research prototype; the nanochat fork is the cloud training path.
+- the original local reverse-only research prototype in [`reverse_token_prediction_lab.py`](reverse_token_prediction_lab.py)
+- the higher-throughput `nanochat` fork in [`nanochat_reverse/`](nanochat_reverse/) used for the 8xH100 RunPod experiment
+
+## April 2026 Result
+
+The main 8xH100 RunPod experiment produced a real result:
+
+- `1.384B` parameters
+- `5.84B` target train tokens
+- reverse validation improved from `3.1675 bpb` to `0.7575 bpb`
+- steady-state terminal transcript showed roughly `0.95M-0.98M tok/s`
+- the reverse objective clearly learned anchor landing and topic lead-ins
+
+The weights were lost near the end of the run when the remote container restarted, because checkpoints had been written to ephemeral `/root/.cache` instead of the persistent `/workspace` volume. The repo now defaults reverse runs to `/workspace/nanochat_reverse` when `/workspace` is present, so the failure mode that killed this run is fixed in the codebase.
+
+## Evidence
+
+<p align="center">
+  <img src="docs/results/assets/validation_curve.png" alt="Validation curve" width="74%" />
+</p>
+
+<p align="center">
+  <img src="docs/results/assets/probe_tradeoffs.png" alt="Checkpoint probe tradeoffs" width="74%" />
+</p>
+
+High-level read:
+
+- the validation curve kept moving well past the halfway point
+- checkpoint probes at `3000`, `4000`, and `5000` confirmed the reverse objective was real
+- `5000` default decoding was the best observed balance
+- lower temperature increased looping; higher temperature reduced loops but increased hallucination
+
+## Artifacts
+
+- [Full experiment report](docs/results/reverse_runpod_8xh100_report.md)
+- [Presentation deck (.pptx)](docs/results/Reverse_Token_Prediction_Results_2026-04-29.pptx)
+- [Structured result record (.json)](docs/results/reverse_runpod_8xh100_apr2026.json)
+- [Surviving zipped launch log](docs/reverse_8xh100_from_zip.log)
+- [RunPod reverse runbook](docs/nanochat_reverse_h100.md)
+- [Original experiment rationale](docs/reverse_training_idea.md)
 
 ## Core Idea
 
@@ -54,8 +103,6 @@ For a single-H100 budget run, use the older speedrun path:
 TARGET_TOKENS=1000000000 bash scripts/runpod_h100_speedrun.sh
 ```
 
-That script installs the environment with FlashAttention enabled, builds a local pretokenized token binary under `/workspace/reverse_data`, runs a short attention benchmark, then starts training from the token binary. It remains useful for one-GPU experiments, but the recommended paid multi-H100 path is the nanochat fork below.
-
 ## Nanochat 8xH100 Reverse Run
 
 For the full nanochat-based run on an 8xH100 RunPod node, use the official RunPod PyTorch template. If entering a Docker image manually, use `runpod/pytorch:1.0.3-cu1290-torch291-ubuntu2204`.
@@ -66,6 +113,12 @@ cd Reverse-Token-Prediction/nanochat_reverse
 WANDB_RUN=dummy \
 screen -L -Logfile reverse_8xh100.log -S reverse-nanochat-8x \
   bash runs/reverse_speedrun_8xh100.sh
+```
+
+Reverse run scripts now default to `/workspace/nanochat_reverse` when `/workspace` exists and is writable. That keeps checkpoints on the persistent volume on hosted GPU pods. To override it explicitly:
+
+```bash
+export NANOCHAT_BASE_DIR=/workspace/nanochat_reverse
 ```
 
 This uses nanochat's training stack with a minimal reverse objective patch:
@@ -83,9 +136,7 @@ screen -L -Logfile reverse_5xh100.log -S reverse-nanochat-5x \
   bash runs/reverse_speedrun_5xh100.sh
 ```
 
-This keeps the d24/ratio8/fp8 speedrun settings and adjusts batch/vocab sharding for five GPUs.
-
-See `docs/nanochat_reverse_h100.md` for launch knobs, checkpoint locations, and reverse-generation commands.
+See [docs/nanochat_reverse_h100.md](docs/nanochat_reverse_h100.md) for launch knobs, persistence defaults, checkpoint locations, and reverse-generation commands.
 
 W&B is optional. Leave `WANDB_RUN` unset or set `WANDB_RUN=dummy` to use terminal logs only. Watch and sample with:
 
@@ -96,37 +147,6 @@ MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_loss.sh
 MODEL_TAG=reverse_d24_ratio8 ANCHOR="and that was the strange part." bash runs/reverse_sample.sh
 MODEL_TAG=reverse_d24_ratio8 bash runs/reverse_history_probe.sh
 ```
-
-The older single-H100 launcher defaults to:
-
-- roughly `100M` parameters
-- `vocab_size=8192`
-- `seq_len=1024`
-- `batch_size=128`
-- `bfloat16` autocast
-- fused AdamW
-- optional `torch.compile`
-- Gemma-style grouped-query attention: `n_heads=12`, `n_kv_heads=4`
-- Gemma-style hybrid attention: five local sliding-window layers per global layer, final layer global
-- local attention window `512`
-- fixed reverse-only objective
-- FineWeb-Edu streaming data
-
-Override the single-H100 trainer with environment variables:
-
-```bash
-TARGET_TOKENS=5000000000 BATCH_SIZE=192 COMPILE=1 bash scripts/train_h100_reverse_100m.sh
-```
-
-If `batch_size=128` is too conservative for your H100, try `160` or `192`. If your dataloader becomes the bottleneck, raise `NUM_WORKERS` and use local dataset cache storage.
-
-For the fastest local/global attention path, install FlashAttention during setup:
-
-```bash
-FLASH_ATTN_INSTALL=1 bash scripts/setup_h100_env.sh
-```
-
-Without FlashAttention, the trainer falls back to PyTorch SDPA. Full global attention still uses the fast SDPA path; local attention may be less efficient depending on your PyTorch build.
 
 ## H100 Attention Benchmark
 
@@ -186,12 +206,8 @@ Bare anchors like `42` are intentionally weak and tend to produce bibliography/d
 - `scripts/smoke_test.sh` - toy local correctness check
 - `scripts/sample_reverse.sh` - suffix-conditioned generation
 - `docs/reverse_training_idea.md` - experiment rationale and expected behavior
+- `docs/results/` - report, deck, data, and visual result artifacts
 - `nanochat_reverse/` - vendored nanochat with `--reverse-training` plus 5xH100 and 8xH100 launch scripts
-- `nanochat_reverse/runs/reverse_sample.sh` - easy suffix-anchor generation wrapper for reverse checkpoints
-- `nanochat_reverse/runs/reverse_loss.sh` - W&B-free loss/throughput tail
-- `nanochat_reverse/runs/reverse_history_probe.sh` - factual history-anchor probe that loads the checkpoint once
-- `nanochat_reverse/runs/reverse_watch.sh` - W&B-free log/checkpoint monitor
-- `docs/nanochat_reverse_h100.md` - nanochat reverse H100 runbook
 
 ## Notes
 

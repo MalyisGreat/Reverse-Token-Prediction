@@ -68,13 +68,21 @@ setup_default_logging()
 logger = logging.getLogger(__name__)
 
 def get_base_dir():
-    # co-locate nanochat intermediates with other cached data in ~/.cache (by default)
+    # Prefer an explicit override first.
     if os.environ.get("NANOCHAT_BASE_DIR"):
         nanochat_dir = os.environ.get("NANOCHAT_BASE_DIR")
     else:
-        home_dir = os.path.expanduser("~")
-        cache_dir = os.path.join(home_dir, ".cache")
-        nanochat_dir = os.path.join(cache_dir, "nanochat")
+        # On hosted GPU environments such as RunPod, /workspace is typically the
+        # persistent mount while $HOME is ephemeral. Default there if possible.
+        workspace_dir = "/workspace"
+        if os.name != "nt" and os.path.isdir(workspace_dir) and os.access(workspace_dir, os.W_OK):
+            cwd = os.getcwd().lower()
+            default_name = "nanochat_reverse" if "nanochat_reverse" in cwd else "nanochat"
+            nanochat_dir = os.path.join(workspace_dir, default_name)
+        else:
+            home_dir = os.path.expanduser("~")
+            cache_dir = os.path.join(home_dir, ".cache")
+            nanochat_dir = os.path.join(cache_dir, "nanochat")
     os.makedirs(nanochat_dir, exist_ok=True)
     return nanochat_dir
 

@@ -4,7 +4,11 @@ set -euo pipefail
 # Factual reverse-generation probe. It loads the checkpoint once and samples
 # several known history-fact ending anchors.
 
-export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$HOME/.cache/nanochat_reverse}"
+DEFAULT_BASE_DIR="$HOME/.cache/nanochat_reverse"
+if [ -d /workspace ] && [ -w /workspace ]; then
+  DEFAULT_BASE_DIR="/workspace/nanochat_reverse"
+fi
+export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$DEFAULT_BASE_DIR}"
 
 if [ ! -d ".venv" ]; then
   command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh

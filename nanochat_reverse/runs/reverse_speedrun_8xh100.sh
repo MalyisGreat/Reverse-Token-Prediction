@@ -12,7 +12,11 @@ set -euo pipefail
 # much faster than nanochat's sliding-window "SSSL" pattern under SDPA fallback.
 
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
-export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$HOME/.cache/nanochat_reverse}"
+DEFAULT_BASE_DIR="$HOME/.cache/nanochat_reverse"
+if [ -d /workspace ] && [ -w /workspace ]; then
+  DEFAULT_BASE_DIR="/workspace/nanochat_reverse"
+fi
+export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$DEFAULT_BASE_DIR}"
 mkdir -p "$NANOCHAT_BASE_DIR"
 LOG_DIR="${LOG_DIR:-$NANOCHAT_BASE_DIR/logs}"
 mkdir -p "$LOG_DIR"

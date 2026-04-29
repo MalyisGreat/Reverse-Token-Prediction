@@ -1,0 +1,240 @@
+{
+  "experiment": {
+    "title": "Reverse Token Prediction on 8xH100",
+    "subtitle": "RunPod nanochat reverse pretraining run, April 29 2026",
+    "repo": "MalyisGreat/Reverse-Token-Prediction",
+    "model_tag": "reverse_d24_ratio8",
+    "hardware": "8x NVIDIA H100 80GB HBM3",
+    "params_total": 1384122122,
+    "target_train_tokens": 5838471168,
+    "sequence_len": 2048,
+    "depth": 24,
+    "n_head": 12,
+    "n_kv_head": 12,
+    "n_embd": 1536,
+    "save_every_steps": 1000,
+    "eval_every_steps": 250,
+    "observed_window_pattern": "SSSL",
+    "launch_log_source": "docs/reverse_8xh100_from_zip.log",
+    "launch_log_notes": [
+      "The surviving zipped logfile preserved launch metadata and the first 201 training steps.",
+      "Later validation checkpoints and sampling judgments were reconstructed from the terminal transcript after the remote container was lost."
+    ]
+  },
+  "validation_bpb": [
+    {
+      "step": 0,
+      "bpb": 3.167509,
+      "source": "surviving launch log"
+    },
+    {
+      "step": 250,
+      "bpb": 1.017722,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 500,
+      "bpb": 0.920829,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 750,
+      "bpb": 0.882878,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 1000,
+      "bpb": 0.862738,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 1250,
+      "bpb": 0.851184,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 1500,
+      "bpb": 0.841446,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 1750,
+      "bpb": 0.834959,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 2750,
+      "bpb": 0.800716,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 3000,
+      "bpb": 0.793115,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 3250,
+      "bpb": 0.786521,
+      "source": "terminal transcript"
+    },
+    {
+      "step": 4500,
+      "bpb": 0.757458,
+      "source": "terminal transcript"
+    }
+  ],
+  "throughput": {
+    "warmup_from_surviving_log": {
+      "logged_steps": 201,
+      "step_range": [
+        0,
+        200
+      ],
+      "steady_state_median_tok_sec_after_step_20": 560733.0,
+      "steady_state_max_tok_sec_after_step_20": 562445.0,
+      "steady_state_median_bf16_mfu_after_step_20": 33.84,
+      "source": "parsed from docs/reverse_8xh100_from_zip.log"
+    },
+    "later_terminal_examples": [
+      {
+        "step": 352,
+        "tok_sec": 971856,
+        "bf16_mfu": 58.66,
+        "source": "terminal transcript"
+      },
+      {
+        "step": 400,
+        "tok_sec": 969874,
+        "bf16_mfu": 58.54,
+        "source": "terminal transcript"
+      },
+      {
+        "step": 1282,
+        "tok_sec": 976611,
+        "bf16_mfu": 58.94,
+        "source": "terminal transcript"
+      },
+      {
+        "step": 1321,
+        "tok_sec": 981352,
+        "bf16_mfu": 59.23,
+        "source": "terminal transcript"
+      },
+      {
+        "step": 1336,
+        "tok_sec": 949344,
+        "bf16_mfu": 57.3,
+        "source": "terminal transcript"
+      },
+      {
+        "step": 1366,
+        "tok_sec": 965518,
+        "bf16_mfu": 58.27,
+        "source": "terminal transcript"
+      }
+    ],
+    "later_terminal_summary": {
+      "approx_tok_sec_band": [
+        950000,
+        981000
+      ],
+      "approx_bf16_mfu_band": [
+        57.3,
+        59.23
+      ],
+      "notes": [
+        "The run clearly accelerated far beyond the first 200 logged steps after the long setup phase.",
+        "The later transcript indicates stable operation around roughly 0.97M tok/sec and about 58-59% BF16 MFU."
+      ]
+    }
+  },
+  "manual_probe_scores": [
+    {
+      "label": "3000 default",
+      "checkpoint_step": 3000,
+      "temperature": "default",
+      "top_k": "default",
+      "anchor_adherence": 4.5,
+      "topic_stability": 3.5,
+      "factuality": 2.0,
+      "repetition_control": 3.0,
+      "verdict": "First checkpoint that clearly looked non-random and useful for reverse landing."
+    },
+    {
+      "label": "4000 default",
+      "checkpoint_step": 4000,
+      "temperature": "default",
+      "top_k": "default",
+      "anchor_adherence": 4.5,
+      "topic_stability": 3.5,
+      "factuality": 2.0,
+      "repetition_control": 2.0,
+      "verdict": "Some anchors became cleaner, but repetition became much more obvious."
+    },
+    {
+      "label": "5000 default",
+      "checkpoint_step": 5000,
+      "temperature": "default",
+      "top_k": "default",
+      "anchor_adherence": 4.5,
+      "topic_stability": 3.75,
+      "factuality": 2.25,
+      "repetition_control": 3.5,
+      "verdict": "Best balance observed: short exits improved without fully collapsing into loops."
+    },
+    {
+      "label": "5000 temp0.25 top20",
+      "checkpoint_step": 5000,
+      "temperature": 0.25,
+      "top_k": 20,
+      "anchor_adherence": 5.0,
+      "topic_stability": 3.0,
+      "factuality": 1.75,
+      "repetition_control": 1.0,
+      "verdict": "Too deterministic; the model fell into strong local loops."
+    },
+    {
+      "label": "5000 temp0.9 top80",
+      "checkpoint_step": 5000,
+      "temperature": 0.9,
+      "top_k": 80,
+      "anchor_adherence": 4.25,
+      "topic_stability": 3.0,
+      "factuality": 1.5,
+      "repetition_control": 3.0,
+      "verdict": "Escaped some loops but hallucinated harder and drifted more."
+    },
+    {
+      "label": "5000 temp0.7 top50",
+      "checkpoint_step": 5000,
+      "temperature": 0.7,
+      "top_k": 50,
+      "anchor_adherence": 4.25,
+      "topic_stability": 3.0,
+      "factuality": 1.75,
+      "repetition_control": 2.0,
+      "verdict": "Not better than default; still loopy and still factually weak."
+    }
+  ],
+  "qualitative_takeaways": [
+    "The reverse objective worked: the model usually generated text that landed the requested anchor.",
+    "Topic steering improved materially between 3000 and 5000, especially on history anchors.",
+    "Factuality remained weak at this scale; the model produced plausible lead-ins rather than truthful reconstructions.",
+    "Decoding changes traded loopiness against hallucination. Default 5000 was the best observed compromise."
+  ],
+  "postmortem": {
+    "outcome": "The run was lost after the remote container restarted at about 99.69 percent completion.",
+    "root_cause": "Checkpoints were written under /root/.cache/nanochat_reverse while the persistent volume and downloaded workspace only covered /workspace.",
+    "evidence": [
+      "The reopened container no longer had /root/.cache.",
+      "Searches for model_*.pt, meta_*.json, and optim_*.pt under /root and /workspace returned nothing.",
+      "The downloaded workspace zip preserved repo files and the screen logfile but no checkpoints."
+    ],
+    "retained_artifacts": [
+      "The source code and launch scripts",
+      "The surviving launch logfile",
+      "The terminal transcript with later validation checkpoints",
+      "The CPU probe observations for checkpoints 3000, 4000, and 5000"
+    ]
+  }
+}
