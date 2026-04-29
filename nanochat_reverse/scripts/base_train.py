@@ -135,7 +135,9 @@ def build_model_meta(depth):
     model_dim = ((base_dim + args.head_dim - 1) // args.head_dim) * args.head_dim
     num_heads = model_dim // args.head_dim
     config = GPTConfig(
-        sequence_len=args.max_seq_len, vocab_size=vocab_size,
+        sequence_len=args.max_seq_len,
+        vocab_size=vocab_size,
+        pad_vocab_size_to=math.lcm(64, ddp_world_size),
         n_layer=depth, n_head=num_heads, n_kv_head=num_heads, n_embd=model_dim,
         window_pattern=args.window_pattern,
     )

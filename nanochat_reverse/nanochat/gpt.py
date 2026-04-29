@@ -29,6 +29,7 @@ from nanochat.flash_attention import flash_attn
 class GPTConfig:
     sequence_len: int = 2048
     vocab_size: int = 32768
+    pad_vocab_size_to: int = 64
     n_layer: int = 12
     n_head: int = 6 # number of query heads
     n_kv_head: int = 6 # number of key/value heads (GQA)
@@ -152,7 +153,7 @@ class Block(nn.Module):
 
 
 class GPT(nn.Module):
-    def __init__(self, config, pad_vocab_size_to=64):
+    def __init__(self, config, pad_vocab_size_to=None):
         """
         NOTE a major footgun: this __init__ function runs in meta device context (!!)
         Therefore, any calculations inside here are shapes and dtypes only, no actual data.
@@ -165,9 +166,11 @@ class GPT(nn.Module):
         self.window_sizes = self._compute_window_sizes(config)
         # Pad vocab for efficiency (DDP, tensor cores). This is just an optimization - outputs are cropped in forward().
         # https://huggingface.co/docs/transformers/main_classes/model#transformers.PreTrainedModel.resize_token_embeddings
+        if pad_vocab_size_to is None:
+            pad_vocab_size_to = config.pad_vocab_size_to
         padded_vocab_size = ((config.vocab_size + pad_vocab_size_to - 1) // pad_vocab_size_to) * pad_vocab_size_to
         if padded_vocab_size != config.vocab_size:
-            print0(f"Padding vocab_size from {config.vocab_size} to {padded_vocab_size} for efficiency")
+            print0(f"Padding vocab_size from {config.vocab_size} to {padded_vocab_size} with multiple {pad_vocab_size_to} for efficiency/DDP")
         self.transformer = nn.ModuleDict({
             "wte": nn.Embedding(padded_vocab_size, config.n_embd),
             "h": nn.ModuleList([Block(config, layer_idx) for layer_idx in range(config.n_layer)]),

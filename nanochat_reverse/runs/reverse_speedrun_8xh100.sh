@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Reverse-token nanochat run for a single 8xH100 node.
+# Reverse-token nanochat run for a single H100 node.
 # It keeps nanochat's high-throughput pretraining stack, but trains the base
 # model on BOS + reversed token rows so the causal objective predicts the
 # previous token instead of the next token.
@@ -9,6 +9,8 @@ set -euo pipefail
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 export NANOCHAT_BASE_DIR="${NANOCHAT_BASE_DIR:-$HOME/.cache/nanochat_reverse}"
 mkdir -p "$NANOCHAT_BASE_DIR"
+LOG_DIR="${LOG_DIR:-$NANOCHAT_BASE_DIR/logs}"
+mkdir -p "$LOG_DIR"
 
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 [ -d ".venv" ] || uv venv
@@ -24,6 +26,7 @@ TARGET_PARAM_DATA_RATIO="${TARGET_PARAM_DATA_RATIO:-8}"
 DEVICE_BATCH_SIZE="${DEVICE_BATCH_SIZE:-16}"
 NPROC_PER_NODE="${NPROC_PER_NODE:-8}"
 MODEL_TAG="${MODEL_TAG:-reverse_d${DEPTH}_ratio${TARGET_PARAM_DATA_RATIO}}"
+RUN_LOG="${RUN_LOG:-$LOG_DIR/${MODEL_TAG}_$(date +%Y%m%d_%H%M%S).log}"
 DATA_SHARDS_BOOTSTRAP="${DATA_SHARDS_BOOTSTRAP:-8}"
 DATA_SHARDS="${DATA_SHARDS:-170}"
 SAVE_EVERY="${SAVE_EVERY:-1000}"
@@ -32,12 +35,19 @@ EVAL_TOKENS="${EVAL_TOKENS:-41943040}"
 CORE_METRIC_EVERY="${CORE_METRIC_EVERY:--1}"
 SAMPLE_EVERY="${SAMPLE_EVERY:--1}"
 FP8_FLAG="${FP8_FLAG:---fp8}"
+TOTAL_BATCH_SIZE="${TOTAL_BATCH_SIZE:-}"
 
-echo "nanochat reverse 8xH100 run"
+exec > >(tee -a "$RUN_LOG") 2>&1
+echo "logging to $RUN_LOG"
+
+echo "nanochat reverse H100 run"
 echo "base_dir=$NANOCHAT_BASE_DIR"
 echo "model_tag=$MODEL_TAG"
 echo "depth=$DEPTH ratio=$TARGET_PARAM_DATA_RATIO nproc=$NPROC_PER_NODE device_batch=$DEVICE_BATCH_SIZE"
 echo "data_shards=$DATA_SHARDS save_every=$SAVE_EVERY eval_every=$EVAL_EVERY"
+if [ -n "$TOTAL_BATCH_SIZE" ]; then
+  echo "total_batch_size=$TOTAL_BATCH_SIZE"
+fi
 
 python -m nanochat.report reset
 
@@ -53,6 +63,11 @@ python -m scripts.tok_eval
 echo "Waiting for dataset download to complete..."
 wait "$DATASET_DOWNLOAD_PID"
 
+TRAIN_EXTRA_ARGS=()
+if [ -n "$TOTAL_BATCH_SIZE" ]; then
+  TRAIN_EXTRA_ARGS+=(--total-batch-size="$TOTAL_BATCH_SIZE")
+fi
+
 torchrun --standalone --nproc_per_node="$NPROC_PER_NODE" -m scripts.base_train -- \
   --depth="$DEPTH" \
   --target-param-data-ratio="$TARGET_PARAM_DATA_RATIO" \
@@ -65,6 +80,7 @@ torchrun --standalone --nproc_per_node="$NPROC_PER_NODE" -m scripts.base_train -
   --eval-tokens="$EVAL_TOKENS" \
   --core-metric-every="$CORE_METRIC_EVERY" \
   --sample-every="$SAMPLE_EVERY" \
+  "${TRAIN_EXTRA_ARGS[@]}" \
   $FP8_FLAG
 
 python -m scripts.reverse_generate \

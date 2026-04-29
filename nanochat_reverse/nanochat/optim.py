@@ -7,10 +7,22 @@ Addapted from: https://github.com/KellerJordan/modded-nanogpt
 Further contributions from @karpathy and @chrisjmccormick.
 """
 
+import os
 import torch
 import torch.distributed as dist
 from torch import Tensor
 from nanochat.common import COMPUTE_DTYPE
+
+
+def optimizer_compile(fn):
+    """Compile optimizer kernels when available, but do not make import fail."""
+    if os.environ.get("NANOCHAT_DISABLE_OPTIM_COMPILE") == "1":
+        return fn
+    try:
+        return torch.compile(dynamic=False, fullgraph=True)(fn)
+    except Exception as exc:
+        print(f"WARNING: disabling compiled optimizer kernel for {fn.__name__}: {exc}")
+        return fn
 
 # -----------------------------------------------------------------------------
 """
@@ -18,7 +30,7 @@ Good old AdamW optimizer, fused kernel.
 https://arxiv.org/abs/1711.05101
 """
 
-@torch.compile(dynamic=False, fullgraph=True)
+@optimizer_compile
 def adamw_step_fused(
     p: Tensor,              # (32768, 768) - parameter tensor
     grad: Tensor,           # (32768, 768) - gradient, same shape as p
@@ -88,7 +100,7 @@ polar_express_coeffs = [
     (2.3465413258596377, -1.7097828382687081, 0.42323551169305323),
 ]
 
-@torch.compile(dynamic=False, fullgraph=True)
+@optimizer_compile
 def muon_step_fused(
     stacked_grads: Tensor,          # (12, 768, 3072) - stacked gradients
     stacked_params: Tensor,         # (12, 768, 3072) - stacked parameters

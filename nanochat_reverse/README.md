@@ -2,7 +2,8 @@
 
 > Reverse-token fork note: this vendored copy adds `--reverse-training`, which
 > keeps the leading BOS token and reverses the rest of each packed training row.
-> Use `runs/reverse_speedrun_8xh100.sh` for the 8xH100 reverse run and
+> Use `runs/reverse_speedrun_5xh100.sh` or `runs/reverse_speedrun_8xh100.sh`
+> for reverse H100 runs and
 > `python -m scripts.reverse_generate` to sample text that leads into an ending
 > anchor.
 

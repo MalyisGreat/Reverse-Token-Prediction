@@ -58,7 +58,17 @@ That script installs the environment with FlashAttention enabled, builds a local
 
 ## Nanochat 8xH100 Reverse Run
 
-For the full nanochat-based run on an 8xH100 node:
+For the full nanochat-based run on a 5xH100 node:
+
+```bash
+cd nanochat_reverse
+screen -L -Logfile reverse_5xh100.log -S reverse-nanochat-5x \
+  bash runs/reverse_speedrun_5xh100.sh
+```
+
+This keeps the d24/ratio8/fp8 speedrun settings and adjusts batch/vocab sharding for five GPUs.
+
+For an 8xH100 node:
 
 ```bash
 cd nanochat_reverse
@@ -164,7 +174,7 @@ Bare anchors like `42` are intentionally weak and tend to produce bibliography/d
 - `scripts/smoke_test.sh` - toy local correctness check
 - `scripts/sample_reverse.sh` - suffix-conditioned generation
 - `docs/reverse_training_idea.md` - experiment rationale and expected behavior
-- `nanochat_reverse/` - vendored nanochat with `--reverse-training` and an 8xH100 launch script
+- `nanochat_reverse/` - vendored nanochat with `--reverse-training` plus 5xH100 and 8xH100 launch scripts
 - `docs/nanochat_reverse_h100.md` - nanochat reverse H100 runbook
 
 ## Notes
